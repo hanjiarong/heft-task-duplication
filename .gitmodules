@@ -1,0 +1,9 @@
+[submodule "workflow-simulation-utils"]
+	path = workflow-simulation-utils
+	url = git@github.com:thiagogenez/workflow-simulation-utils.git
+[submodule "scripts/utils"]
+	path = scripts/utils
+	url = git@github.com:thiagogenez/workflow-simulation-utils.git
+[submodule "scripts/runners/utils"]
+	path = scripts/runners/utils
+	url = git@github.com:thiagogenez/workflow-simulation-utils.git
