@@ -18,7 +18,7 @@ from utils.utils import query_yes_no
 ROOT_DIR = '/local1/thiagogenez/heft-task-duplication'
 APP_DIR = '%s/data/dags' % (ROOT_DIR)
 VMs_DIR = '%s/data/vms' % (ROOT_DIR)
-
+JAR = '%s/jar/HEFTs.jar-jar-with-dependencies.jar' % (ROOT_DIR)
 
 
 
@@ -77,21 +77,21 @@ def main(output_dir, algorithms, vm_files, processing_capacity, bandwidth_values
 	print args[0]
 	print dirs[0]
 
-	#print '>>> creating output directories...'
-	#create_output_directory(dirs)
+	print '>>> creating output directories...'
+	create_output_directory(dirs)
 
 	# creating (dead)pool =P of workes
-	#pool = mp.Pool(processes=cpu,initializer=start_process)
+	pool = mp.Pool(processes=cpu,initializer=start_process)
 
-	#func = partial(call_java, xms, xmx, '', JAR, java)
+	func = partial(call_java, xms, xmx, '', JAR, 'java')
 
-	#it = pool.imap(func, args)
+	it = pool.imap(func, args)
 	
-	#for result in it:
-	#	print '\t', result
+	for result in it:
+		print '\t', result
 
-	#pool.close()
-	#pool.join()
+	pool.close()
+	pool.join()
 
 if __name__ == '__main__':
 
@@ -131,7 +131,6 @@ if __name__ == '__main__':
 		parser.print_usage()
 
 
-	JAR = '%s/data/jar/HEFTs.jar-jar-with-dependencies.jar' % (ROOT_DIR)
 	output_dir = '%s/simulations-outputs' % (ROOT_DIR)
 
 	print args
