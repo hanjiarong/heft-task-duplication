@@ -18,7 +18,7 @@ from utils.utils import query_yes_no
 ROOT_DIR = '/local1/thiagogenez/heft-task-duplication'
 APP_DIR = '%s/data/dags' % (ROOT_DIR)
 VMs_DIR = '%s/data/vms' % (ROOT_DIR)
-JAR = '%s/jar/HEFTs.jar-jar-with-dependencies.jar' % (ROOT_DIR)
+
 
 
 
@@ -74,8 +74,6 @@ def main(output_dir, algorithms, vm_files, processing_capacity, bandwidth_values
 		print '>>> No simulation was created to run'
 		exit(0)
 
-	print args[0]
-	print dirs[0]
 
 	print '>>> creating output directories...'
 	create_output_directory(dirs)
@@ -131,6 +129,7 @@ if __name__ == '__main__':
 		parser.print_usage()
 
 
+	JAR = '%s/jar/HEFTs.jar-jar-with-dependencies.jar' % (ROOT_DIR)
 	output_dir = '%s/simulations-outputs' % (ROOT_DIR)
 
 	print args
@@ -143,3 +142,7 @@ if __name__ == '__main__':
 		args.app_names, args.app_sizes, args.nodes, args.ccrs, args.iter_begin, args.iterations, args.xms,\
 		args.xmx, args.cpu, JAR)
 
+
+
+	# python call
+	# python run.py --iterations 100 --iter_begin 0 
