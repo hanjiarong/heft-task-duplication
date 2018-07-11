@@ -38,7 +38,7 @@ def create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_files, bandwid
 				simulation_output_path= '%s/%s/%s/%s/results' % (output_dir, app_name, app_size, vm_file)
 				simulation_filename = 'simulation'
 
-				arg = arg + '-app %s -app-dir %s/%s ' % (app_name, APP_DIR, app_name)
+				arg = arg + '-app %s.n.%s.0.dag -app-dir %s/%s ' % (app_name, app_size, APP_DIR, app_name)
 				arg = arg + '-vms-dir %s --vm %s ' % (VMs_DIR, vm_file)
 				arg = arg + '--bandwidth %s ' % (commify(bandwidth_values))
 				arg = arg + '--ccrs %s ' % (commify(ccrs))
