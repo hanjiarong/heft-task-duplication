@@ -94,17 +94,17 @@ def main(output_dir, algorithms, vm_files, processing_capacity, bandwidth_values
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.05', 'HEFT-Ilia-W-0.10', 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
-	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT']
-	app_sizes = ['50', '100', '300', '500', '1000']
+	algorithms = ['HEFT','HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.05', 'HEFT-Ilia-W-0.10']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO']#, 'SIPHT']
+	app_sizes = ['50', '100', '500', '1000']
 
-	vm_files = ['heft.2.yaml', 'heft.10.yaml']
+	vm_files = ['heft.5.yaml', 'heft.10.yaml', 'heft.15.yaml']
 
 	nodes = ['500', '5000']
-	ccrs = ['0.1', '0.5', '1.0', '1.5', '2.0']
+	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
 
-	processing_capacity = ['1', '10']
-	bandwidth_values = ['1', '10'] 
+	processing_capacity = ['10', '100']
+	bandwidth_values = ['10', '100'] 
 
 	parser = argparse.ArgumentParser(description='Simulator runner', add_help=True, prog='run.py', usage='python %(prog)s [options]', epilog='Mail me (thiagogenez@ic.unicamp.br) for more details', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('--app_names', nargs='+', type=str, help='App names for simulations', action='store', default=app_names)
