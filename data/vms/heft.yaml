@@ -1,0 +1,19 @@
+vms:
+
+ vm0:
+  mips: 1.0
+  cores: 1
+  billing:
+   unitTime: 0.0
+   unitPrice: 0.0
+
+bandwidth: 
+ internal: 134217728.0
+ external: 134217728.0
+
+dataTransferCostOutside:
+ in: 0.0
+ out: 1.0
+ unitData: 1.0
+
+contention: true
