@@ -60,7 +60,7 @@ def create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_file_template,
 
 
 
-def main(output_dir, algorithms, vm_file_template, resources processing_capacity, bandwidth_values,\
+def main(output_dir, algorithms, vm_file_template, resources, processing_capacity, bandwidth_values,\
 		app_names, app_sizes, nodes, ccrs, iter_begin, iterations, xms,\
 		xmx, cpu, JAR):
 
