@@ -25,21 +25,21 @@ VMs_DIR = '%s/data/vms' % (ROOT_DIR)
 def commify(list):
 	return ','.join(list)
 
-def create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_files, bandwidth_values, processing_capacity, algorithms, it_begin=0, iterations=20):
+def create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_file_template, resources, bandwidth_values, processing_capacity, algorithms, it_begin=0, iterations=20):
 
 	args = list()
 	dirs_to_make = set()
 
 	for app_name in app_names:
 		for app_size in app_sizes:
-			for vm_file in vm_files:
+			for resource in resources:
 				arg = str()
 
-				simulation_output_path= '%s/%s/%s/%s/results' % (output_dir, app_name, app_size, vm_file)
+				simulation_output_path= '%s/%s/%s/%s/results' % (output_dir, app_name, app_size, resource)
 				simulation_filename = 'simulation'
 
 				arg = arg + '-app %s.n.%s.0.dag -app-dir %s ' % (app_name, app_size, APP_DIR)
-				arg = arg + '-vms-dir %s --vm %s ' % (VMs_DIR, vm_file)
+				arg = arg + '-vms-dir %s --vm %s --resources %s ' % (VMs_DIR, vm_file_template, resource)
 				arg = arg + '--bandwidth %s ' % (commify(bandwidth_values))
 				arg = arg + '--ccrs %s ' % (commify(ccrs))
 				arg = arg + '--fromDAGNumber %s ' % (it_begin)
@@ -60,14 +60,14 @@ def create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_files, bandwid
 
 
 
-def main(output_dir, algorithms, vm_files, processing_capacity, bandwidth_values,\
+def main(output_dir, algorithms, vm_file_template, resources processing_capacity, bandwidth_values,\
 		app_names, app_sizes, nodes, ccrs, iter_begin, iterations, xms,\
 		xmx, cpu, JAR):
 
 	#creating params
 	print '>>> creating simulation arguments...'
 	
-	(dirs, args) = create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_files, bandwidth_values, processing_capacity, algorithms, it_begin=iter_begin, iterations=iterations)
+	(dirs, args) = create_args(output_dir, app_names, app_sizes, nodes, ccrs, vm_file_template, resources, bandwidth_values, processing_capacity, algorithms, it_begin=iter_begin, iterations=iterations)
 
 
 	if len(args) == 0:
@@ -98,10 +98,10 @@ if __name__ == '__main__':
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO']#, 'SIPHT']
 	app_sizes = ['50', '100', '500', '1000']
 
-	vm_files = ['heft.5.yaml', 'heft.10.yaml', 'heft.15.yaml']
-
+	vm_file_template = 'heft.yaml'
 	nodes = ['500', '5000']
 	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
+	resources = ['5', '10', '15', '20', '25', '30', '35']
 
 	processing_capacity = ['10', '100']
 	bandwidth_values = ['10', '100'] 
@@ -109,7 +109,8 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Simulator runner', add_help=True, prog='run.py', usage='python %(prog)s [options]', epilog='Mail me (thiagogenez@ic.unicamp.br) for more details', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('--app_names', nargs='+', type=str, help='App names for simulations', action='store', default=app_names)
 	parser.add_argument('--app_sizes', nargs='+', help='Size of the application', type=int, action='store', default=app_sizes)
-	parser.add_argument('--vm_files', nargs='+', help='VM files', type=int, action='store', default=vm_files)
+	parser.add_argument('--vm_file_template', nargs='?', help='VM files', type=int, action='store', default=vm_file_template)
+	parser.add_argument('--resources', nargs='+', help='VM files', type=int, action='store', default=resources)
 	parser.add_argument('--algorithms', nargs='+', type=str, help='Scheduling policies', action='store', default=algorithms)
 	parser.add_argument('--xms', nargs='?', help='The initial memory allocation pool for a Java Virtual Machine (JVM)', type=int, action='store', default=4)
 	parser.add_argument('--xmx', nargs='?', help='The maximum memory allocation pool for a Java Virtual Machine (JVM)', type=int, action='store', default=8)
@@ -138,7 +139,7 @@ if __name__ == '__main__':
 
 
 	
-	main(output_dir, args.algorithms, args.vm_files, args.processing_capacity, args.bandwidth_values,\
+	main(output_dir, args.algorithms, args.vm_file_template, args.resources, args.processing_capacity, args.bandwidth_values,\
 		args.app_names, args.app_sizes, args.nodes, args.ccrs, args.iter_begin, args.iterations, args.xms,\
 		args.xmx, args.cpu, JAR)
 

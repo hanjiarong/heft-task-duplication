@@ -50,16 +50,16 @@ def get_correct_legend(labels):
 			new_labels.append(r'LookAhead-TaskDuplication')
 
 		elif 'HEFT-Ilia-W-0.05' == label:
-			new_labels.append(r'W $0.05$')
+			new_labels.append(r'W-$0.05$')
 
 		elif 'HEFT-Ilia-W-0.10' == label:
-			new_labels.append(r'W $0.10$')
+			new_labels.append(r'W-$0.10$')
 
 		elif 'HEFT-Ilia-W-0.50' == label:
-			new_labels.append(r'W $0.50$')
+			new_labels.append(r'W-$0.50$')
 
 		elif 'HEFT-Ilia-W-0.90' == label:
-			new_labels.append(r'W $0.90$')
+			new_labels.append(r'W-$0.90$')
 
 		else:
 			new_labels.append('Unknown ylabel')
@@ -70,16 +70,17 @@ def get_correct_legend(labels):
 def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
 
 	#fig, ax = plt.subplots()
-	fig, ax = plt.subplots(figsize=(13, 6))
+	fig, ax = plt.subplots(figsize=(10, 5))
 
 	minorLocator = AutoMinorLocator()
 
-	x = np.arange(len(ccrs))
+	x = [float(ccr) for ccr in ccrs]
 	errorbars = list()
 
 	#confg
 	linestyle = ['solid', 'dashed', 'dashdot', 'dotted', 'solid']
 	markers = ['v', 'o', 'x', 'D', '*']
+	colours = ['black', 'red', 'blue', 'green', 'purple']
 
 	#preparing data
 	
@@ -97,14 +98,15 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 			y.append(mean)
 			yerr.append(ci)
 
-		errorbar = ax.errorbar(x, y, yerr=yerr, ls=linestyle[i], marker=markers[i], color='black', markerfacecolor="None", capsize=5)
+		errorbar = ax.errorbar(x, y, yerr=yerr, ls=linestyle[i], marker=markers[i], color=colours[i], markerfacecolor="None", capsize=5, markersize=6, linewidth=1)
 		errorbars.append(errorbar[0])
 
 	#################
 	# x-axis config #
 	#################
 	ax.xaxis.labelpad = 15
-	ax.set_xticks(x,ccrs)
+	ax.set_xticks([float(ccr) for ccr in ccrs])
+	ax.set_xticklabels([float(ccr) for ccr in ccrs])
 	ax.set_xlabel(r'CCR', fontsize=14)
 
 	#################
@@ -113,7 +115,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	ax.set_ylabel(ylabel, fontsize=14)
 	ax.yaxis.labelpad = 9
 	ax.yaxis.set_minor_locator(minorLocator)
-	ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+	#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
 	
 
 	#################
@@ -126,7 +128,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	ax.set_axisbelow(True)
 
 	# Legend
-	plt.legend(errorbars, get_correct_legend(algorithms), loc='upper left', ncol=1, numpoints=2, fontsize=10)
+	plt.legend(errorbars, get_correct_legend(algorithms), loc='best', ncol=1, numpoints=2, fontsize=10)
 
 
 	
@@ -197,6 +199,7 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 			error_kw=error_config,
 			capsize=5,
 			edgecolor='black',
+			#bottom=min(bar_means) - 0.20 *min(bar_means),
 			label='%s' % (algorithms[i]))
 		rects.append(rect)
 
@@ -236,7 +239,7 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	ax.yaxis.labelpad = 9
 	ax.yaxis.grid(color='black',linestyle='dotted', linewidth=1)
 	ax.yaxis.set_minor_locator(minorLocator)
-	ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+	#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
 	ax.tick_params( axis='both', labelsize=14)
 
 	#################
@@ -249,7 +252,7 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	ax.set_axisbelow(True)
 
 	# Legend
-	plt.legend(rects, get_correct_legend(algorithms), loc='upper left', ncol=1, fontsize=10)
+	plt.legend(rects, get_correct_legend(algorithms), loc='best', ncol=1, fontsize=10)
 
 	
 	# tight layout
@@ -290,7 +293,7 @@ def calculate_stats(data, ccrs, algorithms):
 
 	return data
 
-def parse_json(json_filename, ccrs, algorithms,  title='title', plot_filename='plot', output_dir='/tmp'):
+def parse_json(json_filename, ccrs, algorithms):
 
 	makespans =  create_data_field(ccrs, algorithms)
 	communications =  create_data_field(ccrs, algorithms)
@@ -303,9 +306,9 @@ def parse_json(json_filename, ccrs, algorithms,  title='title', plot_filename='p
 
 				for ccr in ccrs:
 					
-					for key in json_data[ccr][0].keys():
+					for simulation_number in json_data[ccr][0].keys():
 
-						raw_data = json_data[ccr][0][key]
+						raw_data = json_data[ccr][0][simulation_number]
 
 						for result in raw_data:
 							
@@ -328,19 +331,50 @@ def parse_json(json_filename, ccrs, algorithms,  title='title', plot_filename='p
 	except (IOError, OSError) as e:
 		print ("file not found:  %s") % (e)
 
-
 	## calculating averages and CIs
 	makespans = calculate_stats(makespans, ccrs, algorithms)
 	communications = calculate_stats(communications, ccrs, algorithms)
 	runtimes = calculate_stats(runtimes, ccrs, algorithms)
 
-	plot_errorbars(makespans, ccrs, algorithms, ylabel='Average makespan', title=title, plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
-	plot_bars(makespans, ccrs, algorithms, ylabel='Average makespan', title=title, plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+	return (makespans, communications, runtimes)
 
-	plot_errorbars(communications, ccrs, algorithms, ylabel='Average communication cost', title=title, plot_filename='%s/communication-%s' % (output_dir, plot_filename))
-	plot_bars(communications, ccrs, algorithms, ylabel='Average communication cost', title=title, plot_filename='%s/communication-%s' % (output_dir, plot_filename))
 
-	#plot_bars(runtimes, ccrs, algorithms, ylabel='Average Execution time (s)', title=title, plot_filename='%s/runtime-%s' % (output_dir, plot_filename))
+def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
+
+	import operator
+	import functools
+
+	# function to div element by element of 2 lists
+	multi_div = functools.partial(map, operator.div)
+
+	new_data = create_data_field(ccrs, algorithms)
+
+	for ccr in ccrs:
+
+		comparator_values = data[ccr][relative]['values']
+
+		for algorithm in algorithms:
+
+			original_values = data[ccr][algorithm]['values']
+
+			new_values = multi_div(original_values, comparator_values)
+
+			new_data[ccr][algorithm]['values'] = new_values
+
+
+	new_data = calculate_stats(new_data, ccrs, algorithms)
+
+	return new_data
+
+
+
+
+def call_plots(data, title='title', ylabel='y_label', plot_filename='plot'):
+
+
+	plot_errorbars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
+	plot_bars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
+	
 
 
 if __name__ == '__main__':
@@ -349,8 +383,8 @@ if __name__ == '__main__':
 	algorithms = ['HEFT','HEFT-Ilia-W-0.05', 'HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.10', 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT']
 	app_sizes = ['50', '100', '300', '500', '1000']
-	vm_files = ['heft.2.yaml', 'heft.10.yaml']
-	ccrs = ['0.1', '0.5', '1.0', '1.5', '2.0']
+	vm_files = ['heft.5.yaml', 'heft.10.yaml', 'heft.15.yaml']
+	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
 
 	data_dir = '/local1/thiagogenez/mulitple-workflow-simulation'
 
@@ -383,11 +417,21 @@ if __name__ == '__main__':
 				
 				json_filename= '%s/%s/%s/%s/results/simulation.json' % (args.data_dir, app_name, app_size, vm_file)
 				
-				title = '%s with %s tasks' % (app_name, app_size)
-				plot_filename = '%s-%s' % (app_name, app_size)
-				if 'heft.2.yaml' in vm_file:
-					title = '%s - 2 resources' % (title)
-				elif 'heft.10.yaml' in vm_file:
-					title = '%s - 10 resources' % (title)
+				title = '%s with %s tasks - %s resources' % (app_name, app_size, (vm_file.replace('heft.', '').replace('.yaml', '')))
+				plot_filename = '%s-%s-%s' % (app_name, app_size, vm_file)
 
-				parse_json(json_filename, args.ccrs, args.algorithms, title=title, plot_filename=plot_filename, output_dir=output_dir)
+
+
+				(makespans, communications, runtimes) = parse_json(json_filename, args.ccrs, args.algorithms)
+				
+
+				call_plots(makespans, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+				call_plots(communications, title=title, ylabel='Average makespan', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
+
+				makespans = calculate_relative(makespans, ccrs, algorithms)
+				call_plots(makespans, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
+
+				communications = calculate_relative(communications, ccrs, algorithms)
+				call_plots(communications, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
+
+				
