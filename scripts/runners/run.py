@@ -109,7 +109,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Simulator runner', add_help=True, prog='run.py', usage='python %(prog)s [options]', epilog='Mail me (thiagogenez@ic.unicamp.br) for more details', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('--app_names', nargs='+', type=str, help='App names for simulations', action='store', default=app_names)
 	parser.add_argument('--app_sizes', nargs='+', help='Size of the application', type=int, action='store', default=app_sizes)
-	parser.add_argument('--vm_file_template', nargs='?', help='VM files', type=int, action='store', default=vm_file_template)
+	parser.add_argument('--vm_file_template', nargs='?', help='VM files', type=str, action='store', default=vm_file_template)
 	parser.add_argument('--resources', nargs='+', help='VM files', type=int, action='store', default=resources)
 	parser.add_argument('--algorithms', nargs='+', type=str, help='Scheduling policies', action='store', default=algorithms)
 	parser.add_argument('--xms', nargs='?', help='The initial memory allocation pool for a Java Virtual Machine (JVM)', type=int, action='store', default=4)
