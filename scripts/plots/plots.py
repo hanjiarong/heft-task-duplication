@@ -267,11 +267,11 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	plt.close('all')
 
 def mean_confidence_interval(data, confidence=0.95):
-    a = 1.0*np.array(data)
-    n = len(a)
-    m, se = np.mean(a), scipy.stats.sem(a)
-    h = se * sp.stats.t._ppf((1+confidence)/2., n-1)
-    return m, h
+	a = 1.0*np.array(data)
+	n = len(a)
+	m, se = np.mean(a), scipy.stats.sem(a)
+	h = se * sp.stats.t._ppf((1+confidence)/2., n-1)
+	return m, h
 
 
 def create_data_field(ccrs, algorithms):
@@ -298,6 +298,7 @@ def parse_json(json_filename, ccrs, algorithms):
 	makespans =  create_data_field(ccrs, algorithms)
 	communications =  create_data_field(ccrs, algorithms)
 	runtimes =  create_data_field(ccrs, algorithms)
+	duplicatas = create_data_field(ccrs, algorithms)
 
 	try:
 		with open(json_filename) as file:
@@ -319,10 +320,12 @@ def parse_json(json_filename, ccrs, algorithms):
 								makespan = result['makespan']
 								runtime = result['runtime']
 								communication = result['totalBytesSent']
+								duplicata = result['duplicatas']
 
 								makespans[ccr][algorithm]['values'].append(makespan)
 								runtimes[ccr][algorithm]['values'].append(runtime)
 								communications[ccr][algorithm]['values'].append(communication)
+								duplicatas[ccr][algorithm]['values'].append(duplicata)
 
 
 			except (ValueError) as e:
@@ -335,8 +338,9 @@ def parse_json(json_filename, ccrs, algorithms):
 	makespans = calculate_stats(makespans, ccrs, algorithms)
 	communications = calculate_stats(communications, ccrs, algorithms)
 	runtimes = calculate_stats(runtimes, ccrs, algorithms)
+	duplicatas = calculate_stats(duplicatas, ccrs, algorithms)
 
-	return (makespans, communications, runtimes)
+	return (makespans, communications, runtimes, duplicatas)
 
 
 def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
@@ -369,11 +373,11 @@ def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
 
 
 
-def call_plots(data, title='title', ylabel='y_label', plot_filename='plot'):
+def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_filename='plot'):
 
 
 	plot_errorbars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
-	plot_bars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
+	#plot_bars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
 	
 
 
@@ -383,7 +387,7 @@ if __name__ == '__main__':
 	algorithms = ['HEFT','HEFT-Ilia-W-0.05', 'HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.10', 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT']
 	app_sizes = ['50', '100', '300', '500', '1000']
-	vm_files = ['heft.5.yaml', 'heft.10.yaml', 'heft.15.yaml']
+	resources = ['5', '10', '15', '20', '25', '30', '35']
 	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
 
 	data_dir = '/local1/thiagogenez/mulitple-workflow-simulation'
@@ -391,8 +395,8 @@ if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description='Simulator runner', add_help=True, prog='run.py', usage='python %(prog)s [options]', epilog='Mail me (thiagogenez@ic.unicamp.br) for more details', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('--app_names', nargs='+', type=str, help='App names for simulations', action='store', default=app_names)
-	parser.add_argument('--app_sizes', nargs='+', help='Size of the application', type=int, action='store', default=app_sizes)
-	parser.add_argument('--vm_files', nargs='+', help='VM files', type=int, action='store', default=vm_files)
+	parser.add_argument('--app_sizes', nargs='+', help='Size of the application', type=str, action='store', default=app_sizes)
+	parser.add_argument('--resources', nargs='+', help='Size of the application', type=str, action='store', default=resources)
 	parser.add_argument('--algorithms', nargs='+', type=str, help='Scheduling policies', action='store', default=algorithms)
 	parser.add_argument('--version', action='version', version='%(prog)s 1.0')
 	parser.add_argument('--ccrs', nargs='+', help='communication to computation ratios (CCR)', type=str, action='store', default=ccrs)
@@ -406,32 +410,40 @@ if __name__ == '__main__':
 		parser.print_usage()
 
 
-	# prepare dir to receive the plot files
-	output_dir = '%s/plots' % (args.data_dir)
-	mkdir(output_dir)
-
+	
 
 	for app_name in args.app_names:
 		for app_size in args.app_sizes:
-			for vm_file in args.vm_files:
-				
-				json_filename= '%s/%s/%s/%s/results/simulation.json' % (args.data_dir, app_name, app_size, vm_file)
-				
-				title = '%s with %s tasks - %s resources' % (app_name, app_size, (vm_file.replace('heft.', '').replace('.yaml', '')))
-				plot_filename = '%s-%s-%s' % (app_name, app_size, vm_file)
+			for resource in args.resources:
 
-
-
-				(makespans, communications, runtimes) = parse_json(json_filename, args.ccrs, args.algorithms)
-				
-
-				call_plots(makespans, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
-				call_plots(communications, title=title, ylabel='Average makespan', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
-
-				makespans = calculate_relative(makespans, ccrs, algorithms)
-				call_plots(makespans, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
-
-				communications = calculate_relative(communications, ccrs, algorithms)
-				call_plots(communications, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
+				# prepare dir to receive the plot files
+				output_dir = '%s/plots/xaxis-ccr/%s' % (args.data_dir, app_name)
+				mkdir(output_dir)
 
 				
+				json_filename = '%s/%s/%s/%s/results/simulation.json' % (args.data_dir, app_name, app_size, resource)
+				
+				title = '%s with %s tasks - %s resources' % (app_name, app_size, resource)
+				plot_filename = '%s-%s-%s' % (app_name, app_size, resource)
+
+
+
+				(makespans, communications, runtimes, duplicatas) = parse_json(json_filename, args.ccrs, args.algorithms)
+				
+
+				#call_plots(makespans, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+				#call_plots(communications, title=title, ylabel='Average makespan', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
+
+				call_plots(duplicatas, args.ccrs, algorithms, title=title, ylabel='Average of Clones', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
+
+				
+
+				makespans_relative = calculate_relative(makespans, args.ccrs, algorithms)
+				call_plots(makespans_relative, args.ccrs, algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
+
+				communications_relative = calculate_relative(communications, args.ccrs, algorithms)
+				call_plots(communications_relative, args.ccrs, algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
+
+				#duplicatas_relative = calculate_relative(duplicatas, ccrs, ['HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'])
+
+
