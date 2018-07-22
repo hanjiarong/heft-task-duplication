@@ -1,0 +1,358 @@
+FILE task_0_25_in.dat 1206234287
+FILE task_0_25_out.dat 4470054165
+FILE task_0_16_in.dat 2023968526
+FILE task_0_16_out.dat 1578046362
+FILE task_0_44_in.dat 3674070690
+FILE task_0_44_out.dat 2393792738
+FILE task_0_35_in.dat 1369456417
+FILE task_0_35_out.dat 3810303845
+FILE task_0_7_in.dat 4319937615
+FILE task_0_7_out.dat 3399425801
+FILE task_0_26_in.dat 4589950486
+FILE task_0_26_out.dat 1228744351
+FILE task_0_17_out.dat 3662985918
+FILE task_0_45_out.dat 1360425714
+FILE task_0_36_out.dat 2595435503
+FILE task_0_8_out.dat 4424748719
+FILE task_0_27_out.dat 3850634141
+FILE task_0_18_out.dat 5012047026
+FILE task_0_46_out.dat 3568936321
+FILE task_0_37_out.dat 2498991851
+FILE task_0_9_out.dat 4428607240
+FILE task_0_0_out.dat 2488749396
+FILE task_0_28_out.dat 3436176844
+FILE task_0_19_out.dat 2952914600
+FILE task_0_47_out.dat 1375038422
+FILE task_0_38_out.dat 1793752796
+FILE task_0_10_out.dat 1493775875
+FILE task_0_1_out.dat 5074775879
+FILE task_0_29_out.dat 2943478349
+FILE task_0_20_out.dat 2718627242
+FILE task_0_48_out.dat 1186879395
+FILE task_0_39_out.dat 2600160348
+FILE task_0_11_out.dat 1790998383
+FILE task_0_2_out.dat 4076510691
+FILE task_0_30_out.dat 2219122712
+FILE task_0_21_out.dat 3197383613
+FILE task_0_49_out.dat 1302655488
+FILE task_0_40_out.dat 1108416144
+FILE task_0_12_out.dat 4827851576
+FILE task_0_3_out.dat 1476461073
+FILE task_0_31_out.dat 2843458799
+FILE task_0_22_out.dat 4465894601
+FILE task_0_41_out.dat 4277687569
+FILE task_0_13_out.dat 3439255462
+FILE task_0_4_out.dat 4379711791
+FILE task_0_32_out.dat 2965036503
+FILE task_0_23_out.dat 4366716418
+FILE task_0_42_out.dat 2907339645
+FILE task_0_14_out.dat 1686972373
+FILE task_0_5_out.dat 2273889229
+FILE task_0_33_out.dat 1342325162
+FILE task_0_24_out.dat 5339740211
+FILE task_0_43_out.dat 4728956320
+FILE task_0_15_out.dat 1298164255
+FILE task_0_6_out.dat 4668595302
+FILE task_0_34_out.dat 2892237969
+FILE outfile.dat 2567103429
+FILE task_0_17_in.dat 4572806184
+FILE task_0_45_in.dat 1731712960
+FILE task_0_36_in.dat 4700748698
+FILE task_0_8_in.dat 5128123351
+FILE infile.dat 4039624329
+FILE task_0_27_in.dat 1549523719
+FILE task_0_18_in.dat 1225397170
+FILE task_0_46_in.dat 1650527125
+FILE task_0_37_in.dat 2109074371
+FILE task_0_9_in.dat 3472759781
+FILE task_0_0_in.dat 4657947973
+FILE task_0_28_in.dat 3271974337
+FILE task_0_19_in.dat 2323144503
+FILE task_0_47_in.dat 4243740080
+FILE task_0_38_in.dat 3062388708
+FILE task_0_10_in.dat 1921338218
+FILE task_0_1_in.dat 4812353274
+FILE task_0_29_in.dat 4516352306
+FILE task_0_20_in.dat 1307421456
+FILE task_0_48_in.dat 4620033880
+FILE task_0_39_in.dat 4596228903
+FILE task_0_11_in.dat 4139106874
+FILE task_0_2_in.dat 2257679871
+FILE task_0_30_in.dat 1759859466
+FILE task_0_21_in.dat 4010998522
+FILE task_0_49_in.dat 2391917585
+FILE task_0_40_in.dat 5229152699
+FILE task_0_12_in.dat 2471598696
+FILE task_0_3_in.dat 3300351285
+FILE task_0_31_in.dat 3154002768
+FILE task_0_22_in.dat 1810549551
+FILE task_0_41_in.dat 1337643877
+FILE task_0_13_in.dat 3513554873
+FILE task_0_4_in.dat 2639004174
+FILE task_0_32_in.dat 3697212420
+FILE task_0_23_in.dat 2504030057
+FILE task_0_42_in.dat 2792247961
+FILE task_0_14_in.dat 1338667748
+FILE task_0_5_in.dat 5275384524
+FILE task_0_33_in.dat 4797241016
+FILE task_0_24_in.dat 1263827126
+FILE task_0_43_in.dat 4806611914
+FILE task_0_15_in.dat 2599676686
+FILE task_0_6_in.dat 3125325330
+FILE task_0_34_in.dat 1913248320
+TASK task_0_25 parallel::Task: 154.352421688
+TASK task_0_16 parallel::Task: 474.624195921
+TASK task_0_44 parallel::Task: 407.582069693
+TASK task_0_35 parallel::Task: 255.389530167
+TASK task_0_7 parallel::Task: 481.426891
+TASK task_0_26 parallel::Task: 237.927000452
+TASK join parallel::Task: 255.209888754
+TASK task_0_17 parallel::Task: 134.58338191
+TASK task_0_45 parallel::Task: 351.241866222
+TASK task_0_36 parallel::Task: 359.997374547
+TASK task_0_8 parallel::Task: 459.735389658
+TASK task_0 parallel::Task: 275.989824931
+TASK task_0_27 parallel::Task: 469.565343007
+TASK task_0_18 parallel::Task: 231.24098641
+TASK task_0_46 parallel::Task: 451.185382401
+TASK task_0_37 parallel::Task: 240.203070808
+TASK task_0_9 parallel::Task: 421.437163567
+TASK task_0_0 parallel::Task: 112.720340347
+TASK task_0_28 parallel::Task: 337.000461319
+TASK task_0_19 parallel::Task: 120.053489295
+TASK task_0_47 parallel::Task: 141.886462031
+TASK task_0_38 parallel::Task: 406.362019899
+TASK task_0_10 parallel::Task: 121.90379628
+TASK task_0_1 parallel::Task: 404.788064486
+TASK task_0_29 parallel::Task: 129.577324159
+TASK task_0_20 parallel::Task: 203.461782969
+TASK task_0_48 parallel::Task: 243.075316578
+TASK task_0_39 parallel::Task: 104.36676855
+TASK task_0_11 parallel::Task: 422.263203016
+TASK task_0_2 parallel::Task: 491.795917091
+TASK task_0_30 parallel::Task: 328.327320567
+TASK task_0_21 parallel::Task: 213.887332573
+TASK task_0_49 parallel::Task: 364.254369699
+TASK task_0_40 parallel::Task: 372.484696115
+TASK task_0_12 parallel::Task: 139.52983988
+TASK task_0_3 parallel::Task: 106.474173922
+TASK task_0_31 parallel::Task: 406.931725095
+TASK task_0_22 parallel::Task: 308.888919438
+TASK task_0_41 parallel::Task: 120.405051672
+TASK task_0_13 parallel::Task: 348.680069458
+TASK task_0_4 parallel::Task: 267.087515009
+TASK task_0_32 parallel::Task: 117.401936931
+TASK task_0_23 parallel::Task: 448.65065816
+TASK task_0_42 parallel::Task: 145.732446564
+TASK task_0_14 parallel::Task: 218.401051366
+TASK task_0_5 parallel::Task: 271.808418789
+TASK task_0_33 parallel::Task: 257.560682743
+TASK task_0_24 parallel::Task: 195.364287064
+TASK task_0_43 parallel::Task: 190.689963587
+TASK task_0_15 parallel::Task: 262.755584274
+TASK task_0_6 parallel::Task: 296.051972357
+TASK task_0_34 parallel::Task: 254.784390788
+INPUTS task_0_25 task_0_25_in.dat
+OUTPUTS task_0_25 task_0_25_out.dat
+INPUTS task_0_16 task_0_16_in.dat
+OUTPUTS task_0_16 task_0_16_out.dat
+INPUTS task_0_44 task_0_44_in.dat
+OUTPUTS task_0_44 task_0_44_out.dat
+INPUTS task_0_35 task_0_35_in.dat
+OUTPUTS task_0_35 task_0_35_out.dat
+INPUTS task_0_7 task_0_7_in.dat
+OUTPUTS task_0_7 task_0_7_out.dat
+INPUTS task_0_26 task_0_26_in.dat
+OUTPUTS task_0_26 task_0_26_out.dat
+INPUTS join task_0_16_out.dat task_0_44_out.dat task_0_35_out.dat task_0_7_out.dat task_0_26_out.dat task_0_17_out.dat task_0_45_out.dat task_0_36_out.dat task_0_8_out.dat task_0_27_out.dat task_0_18_out.dat task_0_46_out.dat task_0_37_out.dat task_0_9_out.dat task_0_0_out.dat task_0_28_out.dat task_0_19_out.dat task_0_47_out.dat task_0_38_out.dat task_0_10_out.dat task_0_1_out.dat task_0_29_out.dat task_0_20_out.dat task_0_48_out.dat task_0_39_out.dat task_0_11_out.dat task_0_2_out.dat task_0_30_out.dat task_0_21_out.dat task_0_49_out.dat task_0_40_out.dat task_0_12_out.dat task_0_3_out.dat task_0_31_out.dat task_0_22_out.dat task_0_41_out.dat task_0_13_out.dat task_0_4_out.dat task_0_32_out.dat task_0_23_out.dat task_0_42_out.dat task_0_14_out.dat task_0_5_out.dat task_0_33_out.dat task_0_24_out.dat task_0_43_out.dat task_0_15_out.dat task_0_6_out.dat task_0_34_out.dat task_0_25_out.dat
+OUTPUTS join outfile.dat
+INPUTS task_0_17 task_0_17_in.dat
+OUTPUTS task_0_17 task_0_17_out.dat
+INPUTS task_0_45 task_0_45_in.dat
+OUTPUTS task_0_45 task_0_45_out.dat
+INPUTS task_0_36 task_0_36_in.dat
+OUTPUTS task_0_36 task_0_36_out.dat
+INPUTS task_0_8 task_0_8_in.dat
+OUTPUTS task_0_8 task_0_8_out.dat
+INPUTS task_0 infile.dat
+OUTPUTS task_0 task_0_35_in.dat task_0_7_in.dat task_0_26_in.dat task_0_17_in.dat task_0_45_in.dat task_0_36_in.dat task_0_8_in.dat task_0_27_in.dat task_0_18_in.dat task_0_46_in.dat task_0_37_in.dat task_0_9_in.dat task_0_0_in.dat task_0_28_in.dat task_0_19_in.dat task_0_47_in.dat task_0_38_in.dat task_0_10_in.dat task_0_1_in.dat task_0_29_in.dat task_0_20_in.dat task_0_48_in.dat task_0_39_in.dat task_0_11_in.dat task_0_2_in.dat task_0_30_in.dat task_0_21_in.dat task_0_49_in.dat task_0_40_in.dat task_0_12_in.dat task_0_3_in.dat task_0_31_in.dat task_0_22_in.dat task_0_41_in.dat task_0_13_in.dat task_0_4_in.dat task_0_32_in.dat task_0_23_in.dat task_0_42_in.dat task_0_14_in.dat task_0_5_in.dat task_0_33_in.dat task_0_24_in.dat task_0_43_in.dat task_0_15_in.dat task_0_6_in.dat task_0_34_in.dat task_0_25_in.dat task_0_44_in.dat task_0_16_in.dat
+INPUTS task_0_27 task_0_27_in.dat
+OUTPUTS task_0_27 task_0_27_out.dat
+INPUTS task_0_18 task_0_18_in.dat
+OUTPUTS task_0_18 task_0_18_out.dat
+INPUTS task_0_46 task_0_46_in.dat
+OUTPUTS task_0_46 task_0_46_out.dat
+INPUTS task_0_37 task_0_37_in.dat
+OUTPUTS task_0_37 task_0_37_out.dat
+INPUTS task_0_9 task_0_9_in.dat
+OUTPUTS task_0_9 task_0_9_out.dat
+INPUTS task_0_0 task_0_0_in.dat
+OUTPUTS task_0_0 task_0_0_out.dat
+INPUTS task_0_28 task_0_28_in.dat
+OUTPUTS task_0_28 task_0_28_out.dat
+INPUTS task_0_19 task_0_19_in.dat
+OUTPUTS task_0_19 task_0_19_out.dat
+INPUTS task_0_47 task_0_47_in.dat
+OUTPUTS task_0_47 task_0_47_out.dat
+INPUTS task_0_38 task_0_38_in.dat
+OUTPUTS task_0_38 task_0_38_out.dat
+INPUTS task_0_10 task_0_10_in.dat
+OUTPUTS task_0_10 task_0_10_out.dat
+INPUTS task_0_1 task_0_1_in.dat
+OUTPUTS task_0_1 task_0_1_out.dat
+INPUTS task_0_29 task_0_29_in.dat
+OUTPUTS task_0_29 task_0_29_out.dat
+INPUTS task_0_20 task_0_20_in.dat
+OUTPUTS task_0_20 task_0_20_out.dat
+INPUTS task_0_48 task_0_48_in.dat
+OUTPUTS task_0_48 task_0_48_out.dat
+INPUTS task_0_39 task_0_39_in.dat
+OUTPUTS task_0_39 task_0_39_out.dat
+INPUTS task_0_11 task_0_11_in.dat
+OUTPUTS task_0_11 task_0_11_out.dat
+INPUTS task_0_2 task_0_2_in.dat
+OUTPUTS task_0_2 task_0_2_out.dat
+INPUTS task_0_30 task_0_30_in.dat
+OUTPUTS task_0_30 task_0_30_out.dat
+INPUTS task_0_21 task_0_21_in.dat
+OUTPUTS task_0_21 task_0_21_out.dat
+INPUTS task_0_49 task_0_49_in.dat
+OUTPUTS task_0_49 task_0_49_out.dat
+INPUTS task_0_40 task_0_40_in.dat
+OUTPUTS task_0_40 task_0_40_out.dat
+INPUTS task_0_12 task_0_12_in.dat
+OUTPUTS task_0_12 task_0_12_out.dat
+INPUTS task_0_3 task_0_3_in.dat
+OUTPUTS task_0_3 task_0_3_out.dat
+INPUTS task_0_31 task_0_31_in.dat
+OUTPUTS task_0_31 task_0_31_out.dat
+INPUTS task_0_22 task_0_22_in.dat
+OUTPUTS task_0_22 task_0_22_out.dat
+INPUTS task_0_41 task_0_41_in.dat
+OUTPUTS task_0_41 task_0_41_out.dat
+INPUTS task_0_13 task_0_13_in.dat
+OUTPUTS task_0_13 task_0_13_out.dat
+INPUTS task_0_4 task_0_4_in.dat
+OUTPUTS task_0_4 task_0_4_out.dat
+INPUTS task_0_32 task_0_32_in.dat
+OUTPUTS task_0_32 task_0_32_out.dat
+INPUTS task_0_23 task_0_23_in.dat
+OUTPUTS task_0_23 task_0_23_out.dat
+INPUTS task_0_42 task_0_42_in.dat
+OUTPUTS task_0_42 task_0_42_out.dat
+INPUTS task_0_14 task_0_14_in.dat
+OUTPUTS task_0_14 task_0_14_out.dat
+INPUTS task_0_5 task_0_5_in.dat
+OUTPUTS task_0_5 task_0_5_out.dat
+INPUTS task_0_33 task_0_33_in.dat
+OUTPUTS task_0_33 task_0_33_out.dat
+INPUTS task_0_24 task_0_24_in.dat
+OUTPUTS task_0_24 task_0_24_out.dat
+INPUTS task_0_43 task_0_43_in.dat
+OUTPUTS task_0_43 task_0_43_out.dat
+INPUTS task_0_15 task_0_15_in.dat
+OUTPUTS task_0_15 task_0_15_out.dat
+INPUTS task_0_6 task_0_6_in.dat
+OUTPUTS task_0_6 task_0_6_out.dat
+INPUTS task_0_34 task_0_34_in.dat
+OUTPUTS task_0_34 task_0_34_out.dat
+EDGE task_0 task_0_25
+EDGE task_0 task_0_16
+EDGE task_0 task_0_44
+EDGE task_0 task_0_35
+EDGE task_0 task_0_7
+EDGE task_0 task_0_26
+EDGE task_0_25 join
+EDGE task_0_16 join
+EDGE task_0_44 join
+EDGE task_0_35 join
+EDGE task_0_7 join
+EDGE task_0_26 join
+EDGE task_0_17 join
+EDGE task_0_45 join
+EDGE task_0_36 join
+EDGE task_0_8 join
+EDGE task_0_27 join
+EDGE task_0_18 join
+EDGE task_0_46 join
+EDGE task_0_37 join
+EDGE task_0_9 join
+EDGE task_0_0 join
+EDGE task_0_28 join
+EDGE task_0_19 join
+EDGE task_0_47 join
+EDGE task_0_38 join
+EDGE task_0_10 join
+EDGE task_0_1 join
+EDGE task_0_29 join
+EDGE task_0_20 join
+EDGE task_0_48 join
+EDGE task_0_39 join
+EDGE task_0_11 join
+EDGE task_0_2 join
+EDGE task_0_30 join
+EDGE task_0_21 join
+EDGE task_0_49 join
+EDGE task_0_40 join
+EDGE task_0_12 join
+EDGE task_0_3 join
+EDGE task_0_31 join
+EDGE task_0_22 join
+EDGE task_0_41 join
+EDGE task_0_13 join
+EDGE task_0_4 join
+EDGE task_0_32 join
+EDGE task_0_23 join
+EDGE task_0_42 join
+EDGE task_0_14 join
+EDGE task_0_5 join
+EDGE task_0_33 join
+EDGE task_0_24 join
+EDGE task_0_43 join
+EDGE task_0_15 join
+EDGE task_0_6 join
+EDGE task_0_34 join
+EDGE task_0 task_0_17
+EDGE task_0 task_0_45
+EDGE task_0 task_0_36
+EDGE task_0 task_0_8
+EDGE task_0 task_0_27
+EDGE task_0 task_0_18
+EDGE task_0 task_0_46
+EDGE task_0 task_0_37
+EDGE task_0 task_0_9
+EDGE task_0 task_0_0
+EDGE task_0 task_0_28
+EDGE task_0 task_0_19
+EDGE task_0 task_0_47
+EDGE task_0 task_0_38
+EDGE task_0 task_0_10
+EDGE task_0 task_0_1
+EDGE task_0 task_0_29
+EDGE task_0 task_0_20
+EDGE task_0 task_0_48
+EDGE task_0 task_0_39
+EDGE task_0 task_0_11
+EDGE task_0 task_0_2
+EDGE task_0 task_0_30
+EDGE task_0 task_0_21
+EDGE task_0 task_0_49
+EDGE task_0 task_0_40
+EDGE task_0 task_0_12
+EDGE task_0 task_0_3
+EDGE task_0 task_0_31
+EDGE task_0 task_0_22
+EDGE task_0 task_0_41
+EDGE task_0 task_0_13
+EDGE task_0 task_0_4
+EDGE task_0 task_0_32
+EDGE task_0 task_0_23
+EDGE task_0 task_0_42
+EDGE task_0 task_0_14
+EDGE task_0 task_0_5
+EDGE task_0 task_0_33
+EDGE task_0 task_0_24
+EDGE task_0 task_0_43
+EDGE task_0 task_0_15
+EDGE task_0 task_0_6
+EDGE task_0 task_0_34

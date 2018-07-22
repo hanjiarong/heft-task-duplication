@@ -299,6 +299,7 @@ def parse_json(json_filename, ccrs, algorithms):
 	communications =  create_data_field(ccrs, algorithms)
 	runtimes =  create_data_field(ccrs, algorithms)
 	duplicatas = create_data_field(ccrs, algorithms)
+	cost = create_data_field(ccrs, algorithms)
 
 	try:
 		with open(json_filename) as file:
@@ -317,15 +318,34 @@ def parse_json(json_filename, ccrs, algorithms):
 
 							if algorithm in algorithms:
 							
-								makespan = result['makespan']
+								makespan_scheduled = result['makespan-scheduled']
+								makespan_simulated = result['makespan-simulated']
+
+								
+								if int(makespan_scheduled) != int(makespan_simulated):
+									print 'diferent makespan, simulated %s\t scheduled %s\t' % (makespan_scheduled, makespan_simulated)
+
+								
+								communication_scheduled = result['totalBytesSent-scheduled']
+								communication_simulated = result['totalBytesSent-simulated']
+
+
+								if communication_scheduled != communication_simulated:
+									print 'diferent communication, simulated %s\t scheduled %s\t' % (communication_scheduled, communication_simulated)
+								
+
 								runtime = result['runtime']
-								communication = result['totalBytesSent']
 								duplicata = result['duplicatas']
 
-								makespans[ccr][algorithm]['values'].append(makespan)
+								cost_simulated = result['cost-simulated']
+
+								makespans[ccr][algorithm]['values'].append(makespan_simulated)
+								communications[ccr][algorithm]['values'].append(communication_simulated)
+								cost[ccr][algorithm]['values'].append(cost_simulated)
+
 								runtimes[ccr][algorithm]['values'].append(runtime)
-								communications[ccr][algorithm]['values'].append(communication)
 								duplicatas[ccr][algorithm]['values'].append(duplicata)
+								
 
 
 			except (ValueError) as e:
@@ -339,8 +359,9 @@ def parse_json(json_filename, ccrs, algorithms):
 	communications = calculate_stats(communications, ccrs, algorithms)
 	runtimes = calculate_stats(runtimes, ccrs, algorithms)
 	duplicatas = calculate_stats(duplicatas, ccrs, algorithms)
+	cost = calculate_stats(cost, ccrs, algorithms)
 
-	return (makespans, communications, runtimes, duplicatas)
+	return (makespans, communications, runtimes, duplicatas, cost)
 
 
 def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
@@ -357,9 +378,14 @@ def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
 
 		comparator_values = data[ccr][relative]['values']
 
+		mean = data[ccr][relative]['mean']
+
+		comparator_values = [mean if x <= 0.0 else x for x in comparator_values]
+
 		for algorithm in algorithms:
 
 			original_values = data[ccr][algorithm]['values']
+
 
 			new_values = multi_div(original_values, comparator_values)
 
@@ -428,21 +454,25 @@ if __name__ == '__main__':
 
 
 
-				(makespans, communications, runtimes, duplicatas) = parse_json(json_filename, args.ccrs, args.algorithms)
+				(makespans, communications, runtimes, duplicatas, cost) = parse_json(json_filename, args.ccrs, args.algorithms)
 				
 
-				#call_plots(makespans, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
-				#call_plots(communications, title=title, ylabel='Average makespan', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
+				call_plots(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+				call_plots(communications, args.ccrs, args.algorithms, title=title, ylabel='Average communication cost', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
 
-				call_plots(duplicatas, args.ccrs, algorithms, title=title, ylabel='Average of Clones', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
+				call_plots(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of Clones', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
+				call_plots(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost ($)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
 
 				
 
-				makespans_relative = calculate_relative(makespans, args.ccrs, algorithms)
-				call_plots(makespans_relative, args.ccrs, algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
+				makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms)
+				call_plots(makespans_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
 
-				communications_relative = calculate_relative(communications, args.ccrs, algorithms)
-				call_plots(communications_relative, args.ccrs, algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
+				communications_relative = calculate_relative(communications, args.ccrs, args.algorithms)
+				call_plots(communications_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
+
+				cost_relative = calculate_relative(cost, args.ccrs, args.algorithms)
+				call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost ($)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
 
 				#duplicatas_relative = calculate_relative(duplicatas, ccrs, ['HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'])
 
