@@ -6,6 +6,9 @@ from utils.utils import get_stats
 import numpy as np
 import scipy as sp
 import scipy.stats
+import matplotlib
+matplotlib.rcParams['text.usetex'] = True
+matplotlib.rcParams['text.latex.unicode'] = True
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 
@@ -61,11 +64,88 @@ def get_correct_legend(labels):
 		elif 'HEFT-Ilia-W-0.90' == label:
 			new_labels.append(r'W-$0.90$')
 
+		elif 'HEFT-LookAhead' == label:
+			new_labels.append(r'LookAhead')
+
 		else:
 			new_labels.append('Unknown ylabel')
 
 
 	return new_labels
+
+def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
+
+	import numpy as np
+	#fig, ax = plt.subplots()
+	
+
+	linestyle = ['solid', 'dashed', 'dashdot', 'dotted', 'solid', 'solid']
+	markers = ['v', 'o', 'x', 'D', '*', 'v']
+	colours = ['black', 'red', 'blue', 'green', 'purple', 'yellow']
+
+	
+	for ccr in ccrs:	
+		
+		i = 0
+		fig, ax = plt.subplots(figsize=(10, 5))
+		minorLocator = AutoMinorLocator()
+
+		for i in range(len(algorithms)):	
+
+	
+			algorithm = algorithms[i]
+
+			X = data[ccr][algorithm]['values'] 
+			Xs = np.sort(X)  # Or data.sort(), if data can be modified
+
+			#method 1
+			#n_bins=len(Xs)
+			#counts, bin_edges, patches = ax[0].hist(X, bins=n_bins,  histtype='step', cumulative=True, normed=True)
+
+			#method 2
+			y = np.arange(1, len(X) + 1) / np.float(len(X))
+			ax.plot(Xs, y, color=colours[i], label=get_correct_legend([algorithm])[0], ls=linestyle[i], lw=1)
+
+
+			#method 3
+			#cnt, edges = np.histogram(X, bins=n_bins, normed=1, density=False)
+			#ax[2].step(edges[:-1], cnt.cumsum())
+
+			i = i + 1
+
+		#################
+		# x-axis config #
+		#################
+		ax.xaxis.labelpad = 15
+		ax.set_xlabel('%s with CCR %s' % (ylabel, ccr), fontsize=14)
+
+		#################
+		# y-axis config #
+		#################
+		ax.set_ylabel(r'CDF', fontsize=14)
+		ax.yaxis.labelpad = 9
+		ax.yaxis.set_minor_locator(minorLocator)
+		#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+		
+
+		#################
+		# general config#
+		#################
+		ax.set_title(r'%s' % (title), fontsize=17)
+		plt.margins(0.02) # keeps data off plot
+		ax.set_axisbelow(True) # Hide these grid behind plot objects
+		plt.legend(loc='best', ncol=1, numpoints=2, fontsize=10)		
+		plt.tight_layout(True) # tight layout
+		ax.grid('on', axis='both', ls='dashed') #grid
+			
+		#################
+		#     saving    #
+		#################
+		plt.savefig( '%s-%s-CDF.%s' % (plot_filename, ccr, format), format=format, bbox_inches='tight') #dpi=300,  rasterized=True)		
+		plt.clf()
+		plt.close('all')
+		
+
 
 def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
 
@@ -112,7 +192,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	#################
 	# y-axis config #
 	#################
-	ax.set_ylabel(ylabel, fontsize=14)
+	ax.set_ylabel(r'%s' % (ylabel), fontsize=14)
 	ax.yaxis.labelpad = 9
 	ax.yaxis.set_minor_locator(minorLocator)
 	#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
@@ -122,7 +202,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	# general config#
 	#################
 	
-	ax.set_title(title, fontsize=17)
+	ax.set_title(r'%s' % (title), fontsize=17)
 
 	# Hide these grid behind plot objects
 	ax.set_axisbelow(True)
@@ -339,8 +419,8 @@ def parse_json(json_filename, ccrs, algorithms):
 
 								cost_simulated = result['cost-simulated']
 
-								makespans[ccr][algorithm]['values'].append(makespan_simulated)
-								communications[ccr][algorithm]['values'].append(communication_simulated)
+								makespans[ccr][algorithm]['values'].append(makespan_scheduled)
+								communications[ccr][algorithm]['values'].append(communication_scheduled)
 								cost[ccr][algorithm]['values'].append(cost_simulated)
 
 								runtimes[ccr][algorithm]['values'].append(runtime)
@@ -398,6 +478,32 @@ def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
 
 
 
+def calculate_ratio(data1, data2, ccrs, algorithms):
+
+	import operator
+	import functools
+
+	# function to div element by element of 2 lists
+	multi_div = functools.partial(map, operator.div)
+
+	new_data = create_data_field(ccrs, algorithms)
+
+	for ccr in ccrs:
+
+		for algorithm in algorithms:
+
+			values1 = data1[ccr][algorithm]['values']
+
+			values2 = data2[ccr][algorithm]['values']
+
+			new_values = multi_div(values1, values2)
+
+			new_data[ccr][algorithm]['values'] = new_values
+
+	new_data = calculate_stats(new_data, ccrs, algorithms)
+
+	return new_data
+
 
 def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_filename='plot'):
 
@@ -410,7 +516,7 @@ def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_fil
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-Ilia-W-0.05', 'HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.10', 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	algorithms = ['HEFT','HEFT-Ilia-W-0.05', 'HEFT-TaskDuplication','HEFT-LookAhead','HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.10', 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT']
 	app_sizes = ['50', '100', '300', '500', '1000']
 	resources = ['5', '10', '15', '20', '25', '30', '35']
@@ -455,25 +561,43 @@ if __name__ == '__main__':
 
 
 				(makespans, communications, runtimes, duplicatas, cost) = parse_json(json_filename, args.ccrs, args.algorithms)
-				
 
+
+				#  ratio
+				cost_makespan_ratio = calculate_ratio(makespans, cost,  args.ccrs, args.algorithms)
+				call_plots(cost_makespan_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', plot_filename='%s/makespan-cost-ratio-%s' % (output_dir, plot_filename))
+
+				makespan_communication_ratio = calculate_ratio(communications, makespans, args.ccrs, args.algorithms)
+				call_plots(makespan_communication_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Makespan}}{\mbox{Communication}}$ Ratio', plot_filename='%s/communication-makespan-ratio-%s' % (output_dir, plot_filename))
+
+				# call cdf plots (separatelly)
+				mkdir('%s/cdf' % output_dir)
+				plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
+				plot_cdf(communications, ccrs, algorithms, ylabel='Communication cost', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename))
+				plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost (\\$)', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
+				#plot_cdf(cost_makespan_ratio, ccrs, algorithms, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', title=title, plot_filename='%s/cdf/makespan-cost-ratio-%s' % (output_dir, plot_filename))				
+				#plot_cdf(makespan_communication_ratio, ccrs, algorithms, ylabel='$\\frac{\\mbox{Makespan}}{\mbox{Communication}}$ Ratio', title=title, plot_filename='%s/cdf/communication-makespan-ratio-%s' % (output_dir, plot_filename))				
+
+
+
+				# normal plots
 				call_plots(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
 				call_plots(communications, args.ccrs, args.algorithms, title=title, ylabel='Average communication cost', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
 
 				call_plots(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of Clones', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
-				call_plots(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost ($)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
+				call_plots(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
 
 				
 
-				makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms)
+				makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms, relative='HEFT-TaskDuplication')
 				call_plots(makespans_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
 
-				communications_relative = calculate_relative(communications, args.ccrs, args.algorithms)
+				communications_relative = calculate_relative(communications, args.ccrs, args.algorithms,  relative='HEFT-TaskDuplication')
 				call_plots(communications_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
 
-				cost_relative = calculate_relative(cost, args.ccrs, args.algorithms)
-				call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost ($)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
+				cost_relative = calculate_relative(cost, args.ccrs, args.algorithms,  relative='HEFT-TaskDuplication')
+				call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost (\\$)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
 
 				#duplicatas_relative = calculate_relative(duplicatas, ccrs, ['HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'])
 
-
+				
