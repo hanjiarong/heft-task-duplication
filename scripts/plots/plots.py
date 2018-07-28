@@ -564,20 +564,18 @@ if __name__ == '__main__':
 
 
 				#  ratio
-				cost_makespan_ratio = calculate_ratio(makespans, cost,  args.ccrs, args.algorithms)
-				call_plots(cost_makespan_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', plot_filename='%s/makespan-cost-ratio-%s' % (output_dir, plot_filename))
+				##cost_makespan_ratio = calculate_ratio(makespans, cost,  args.ccrs, args.algorithms)
+				##call_plots(cost_makespan_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', plot_filename='%s/makespan-cost-ratio-%s' % (output_dir, plot_filename))
 
-				makespan_communication_ratio = calculate_ratio(communications, makespans, args.ccrs, args.algorithms)
-				call_plots(makespan_communication_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Makespan}}{\mbox{Communication}}$ Ratio', plot_filename='%s/communication-makespan-ratio-%s' % (output_dir, plot_filename))
+				##makespan_communication_ratio = calculate_ratio(communications, makespans, args.ccrs, args.algorithms)
+				##call_plots(makespan_communication_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Makespan}}{\mbox{Communication}}$ Ratio', plot_filename='%s/communication-makespan-ratio-%s' % (output_dir, plot_filename))
 
 				# call cdf plots (separatelly)
-				mkdir('%s/cdf' % output_dir)
+				mkdir('%s/cdf' % output_dir)	
 				plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
 				plot_cdf(communications, ccrs, algorithms, ylabel='Communication cost', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename))
 				plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost (\\$)', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
-				#plot_cdf(cost_makespan_ratio, ccrs, algorithms, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', title=title, plot_filename='%s/cdf/makespan-cost-ratio-%s' % (output_dir, plot_filename))				
-				#plot_cdf(makespan_communication_ratio, ccrs, algorithms, ylabel='$\\frac{\\mbox{Makespan}}{\mbox{Communication}}$ Ratio', title=title, plot_filename='%s/cdf/communication-makespan-ratio-%s' % (output_dir, plot_filename))				
-
+				
 
 
 				# normal plots
@@ -589,13 +587,13 @@ if __name__ == '__main__':
 
 				
 
-				makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms, relative='HEFT-TaskDuplication')
+				makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms, relative='HEFT')
 				call_plots(makespans_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
 
-				communications_relative = calculate_relative(communications, args.ccrs, args.algorithms,  relative='HEFT-TaskDuplication')
+				communications_relative = calculate_relative(communications, args.ccrs, args.algorithms,  relative='HEFT')
 				call_plots(communications_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
 
-				cost_relative = calculate_relative(cost, args.ccrs, args.algorithms,  relative='HEFT-TaskDuplication')
+				cost_relative = calculate_relative(cost, args.ccrs, args.algorithms,  relative='HEFT')
 				call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost (\\$)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
 
 				#duplicatas_relative = calculate_relative(duplicatas, ccrs, ['HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'])
