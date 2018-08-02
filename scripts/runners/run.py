@@ -94,7 +94,7 @@ def main(output_dir, algorithms, vm_file_template, resources, processing_capacit
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-TaskDuplication2','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
 	app_sizes = ['50', '100', '500', '1000']
 

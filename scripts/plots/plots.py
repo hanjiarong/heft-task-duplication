@@ -1,4 +1,4 @@
-import argparse, json
+import argparse, json, os
 
 from utils.utils import mkdir
 from utils.utils import get_stats
@@ -49,6 +49,12 @@ def get_correct_legend(labels):
 		elif 'HEFT-TaskDuplication' == label:
 			new_labels.append(r'TaskDuplication')			
 
+		elif 'HEFT-TaskDuplication2' == label:
+			new_labels.append(r'TaskDuplication2')	
+
+		elif 'Flexible-Scheduler' == label:
+			new_labels.append(r'Cost-aware')	
+
 		elif 'HEFT-LookAhead-TaskDuplication' == label:
 			new_labels.append(r'LookAhead-TaskDuplication')
 
@@ -81,7 +87,7 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 
 	linestyle = ['solid', 'dashed', 'dashdot', 'dotted', 'solid', 'solid']
 	markers = ['v', 'o', 'x', 'D', '*', 'v']
-	colours = ['black', 'red', 'blue', 'green', 'purple', 'yellow']
+	colours = ['black', 'red', 'blue', 'green', 'purple', 'orange', 'magenta']
 
 	
 	for ccr in ccrs:	
@@ -158,9 +164,9 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	errorbars = list()
 
 	#confg
-	linestyle = ['solid', 'dashed', 'dashdot', 'dotted', 'solid']
-	markers = ['v', 'o', 'x', 'D', '*']
-	colours = ['black', 'red', 'blue', 'green', 'purple']
+	linestyle = ['solid', 'dashed', 'dashdot', 'dotted', 'solid', 'dashed', 'dashdot']
+	markers = ['v', 'o', 'x', 'D', '*', '>', ',', '^', 'H']
+	colours = ['black', 'red', 'blue', 'green', 'purple', 'orange', 'magenta']
 
 	#preparing data
 	
@@ -402,16 +408,16 @@ def parse_json(json_filename, ccrs, algorithms):
 								makespan_simulated = result['makespan-simulated']
 
 								
-								if int(makespan_scheduled) != int(makespan_simulated):
-									print 'diferent makespan, simulated %s\t scheduled %s\t' % (makespan_scheduled, makespan_simulated)
+								#if int(makespan_scheduled) != int(makespan_simulated):
+								#	print 'diferent makespan, simulated %s\t scheduled %s\t' % (makespan_scheduled, makespan_simulated)
 
 								
 								communication_scheduled = result['totalBytesSent-scheduled']
 								communication_simulated = result['totalBytesSent-simulated']
 
 
-								if communication_scheduled != communication_simulated:
-									print 'diferent communication, simulated %s\t scheduled %s\t' % (communication_scheduled, communication_simulated)
+								#if communication_scheduled != communication_simulated:
+								#	print 'diferent communication, simulated %s\t scheduled %s\t' % (communication_scheduled, communication_simulated)
 								
 
 								runtime = result['runtime']
@@ -419,8 +425,9 @@ def parse_json(json_filename, ccrs, algorithms):
 
 								cost_simulated = result['cost-simulated']
 
-								makespans[ccr][algorithm]['values'].append(makespan_scheduled)
-								communications[ccr][algorithm]['values'].append(communication_scheduled)
+
+								makespans[ccr][algorithm]['values'].append(makespan_simulated)
+								communications[ccr][algorithm]['values'].append(communication_simulated)
 								cost[ccr][algorithm]['values'].append(cost_simulated)
 
 								runtimes[ccr][algorithm]['values'].append(runtime)
@@ -516,9 +523,9 @@ def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_fil
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-Ilia-W-0.05', 'HEFT-TaskDuplication','HEFT-LookAhead','HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.10', 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
-	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT']
-	app_sizes = ['50', '100', '300', '500', '1000']
+	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-TaskDuplication2','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
+	app_sizes = ['50', '100', '500', '1000']
 	resources = ['5', '10', '15', '20', '25', '30', '35']
 	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
 
@@ -541,7 +548,6 @@ if __name__ == '__main__':
 	except IOError as ioerr:
 		parser.print_usage()
 
-
 	
 
 	for app_name in args.app_names:
@@ -553,6 +559,12 @@ if __name__ == '__main__':
 				mkdir(output_dir)
 
 				
+				## check err
+				
+				err_file  = '%s/%s/%s/%s/runners/simulation.err' % (args.data_dir, app_name, app_size, resource)
+				if os.path.getsize(err_file) == 0:
+					print 'ERR: %s' % (err_file)
+
 				json_filename = '%s/%s/%s/%s/results/simulation.json' % (args.data_dir, app_name, app_size, resource)
 				
 				title = '%s with %s tasks - %s resources' % (app_name, app_size, resource)
