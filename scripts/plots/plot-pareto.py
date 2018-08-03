@@ -258,8 +258,8 @@ if __name__ == '__main__':
 				
 				
 
-				#sns.relplot(x="makespan", y="cost", hue="algorithm", size="resource", sizes=(30,300),  alpha=.4, height=6, data=df)
-				sns.lineplot(x="makespan", y="cost", hue="algorithm", truncate=True, height=5, data=df)
+				sns.relplot(x="makespan", y="cost", hue="algorithm", size="resource", sizes=(30,300),  alpha=.4, height=6, data=df)
+				#sns.lineplot(x="makespan", y="cost", hue="algorithm", truncate=True, height=5, data=df)
 				
 				import matplotlib.pyplot as plt
 				plt.show()

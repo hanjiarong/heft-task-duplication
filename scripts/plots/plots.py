@@ -523,7 +523,7 @@ def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_fil
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-TaskDuplication2','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-LookAhead', 'HEFT-TaskDuplication2','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50'] # 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
 	app_sizes = ['50', '100', '500', '1000']
 	resources = ['5', '10', '15', '20', '25', '30', '35']
