@@ -94,17 +94,17 @@ def main(output_dir, algorithms, vm_file_template, resources, processing_capacit
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	algorithms = ['HEFT','HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', ]# 'Flexible-Scheduler' 'HEFT-TaskDuplication',  'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
 	app_sizes = ['50', '100', '500', '1000']
 
 	vm_file_template = 'heft.yaml'
 	nodes = ['500', '5000']
 	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
-	resources = ['5', '10', '15', '20', '25', '30', '35']
+	resources = ['2', '5', '10', '15', '20', '25', '30', '35']
 
-	processing_capacity = ['100', '1000']
-	bandwidth_values = ['100', '1000'] 
+	processing_capacity = ['500', '1000']
+	bandwidth_values = ['500', '1000'] 
 
 	parser = argparse.ArgumentParser(description='Simulator runner', add_help=True, prog='run.py', usage='python %(prog)s [options]', epilog='Mail me (thiagogenez@ic.unicamp.br) for more details', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('--app_names', nargs='+', type=str, help='App names for simulations', action='store', default=app_names)
