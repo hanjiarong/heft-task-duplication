@@ -93,7 +93,8 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 	for ccr in ccrs:	
 		
 		i = 0
-		fig, ax = plt.subplots(figsize=(10, 5))
+		#fig, ax = plt.subplots(figsize=(10, 5))
+		fig, ax = plt.subplots()
 		minorLocator = AutoMinorLocator()
 
 		for i in range(len(algorithms)):	
@@ -156,8 +157,8 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
 
 	#fig, ax = plt.subplots()
-	fig, ax = plt.subplots(figsize=(10, 5))
-
+	#fig, ax = plt.subplots(figsize=(10, 5))
+	fig, ax = plt.subplots()
 	minorLocator = AutoMinorLocator()
 
 	x = [float(ccr) for ccr in ccrs]
@@ -523,10 +524,10 @@ def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_fil
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-TaskDuplication', 'HEFT-LookAhead', 'HEFT-TaskDuplication2','HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50'] # 'Flexible-Scheduler']# 'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	algorithms = ['HEFT','HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', ]# 'Flexible-Scheduler' 'HEFT-TaskDuplication',  'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
 	app_sizes = ['50', '100', '500', '1000']
-	resources = ['5', '10', '15', '20', '25', '30', '35']
+	resources = ['2', '5', '10', '15', '20', '25', '30', '35']
 	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
 
 	data_dir = '/local1/thiagogenez/mulitple-workflow-simulation'
