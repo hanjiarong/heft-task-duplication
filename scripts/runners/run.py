@@ -103,8 +103,8 @@ if __name__ == '__main__':
 	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
 	resources = ['2', '5', '10', '15', '20', '25', '30', '35']
 
-	processing_capacity = ['500', '1000']
-	bandwidth_values = ['500', '1000'] 
+	processing_capacity = ['100', '500']
+	bandwidth_values = ['100', '500'] 
 
 	parser = argparse.ArgumentParser(description='Simulator runner', add_help=True, prog='run.py', usage='python %(prog)s [options]', epilog='Mail me (thiagogenez@ic.unicamp.br) for more details', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument('--app_names', nargs='+', type=str, help='App names for simulations', action='store', default=app_names)
