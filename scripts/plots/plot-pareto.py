@@ -75,6 +75,8 @@ def plot_errorbars(data, ccrs, algorithm, title='Title', ylabel='y_label', plot_
 	# Hide these grid behind plot objects
 	ax.set_axisbelow(True)
 
+	
+
 	# Legend
 	plt.legend(errorbars, get_correct_legend(algorithms), loc='best', ncol=1, numpoints=2, fontsize=10)
 

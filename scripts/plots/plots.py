@@ -50,34 +50,37 @@ def get_correct_legend(labels):
 			new_labels.append(r'TaskDuplication')			
 
 		elif 'HEFT-TaskDuplication2' == label:
-			new_labels.append(r'TaskDuplication2')	
+			new_labels.append(r'Task Duplication')	
 
 		elif 'Flexible-Scheduler' == label:
 			new_labels.append(r'Cost-aware')	
 
 		elif 'HEFT-LookAhead-TaskDuplication' == label:
-			new_labels.append(r'LookAhead-TaskDuplication')
+			new_labels.append(r'Look-ahead and Task duplication')
 
 		elif 'HEFT-Ilia-W-0.05' == label:
-			new_labels.append(r'W-$0.05$')
+			new_labels.append(r'HEFT with W-$0.05$')
 
 		elif 'HEFT-Ilia-W-0.10' == label:
-			new_labels.append(r'W-$0.10$')
+			new_labels.append(r'HEFT with W-$0.10$')
 
 		elif 'HEFT-Ilia-W-0.50' == label:
-			new_labels.append(r'W-$0.50$')
+			new_labels.append(r'HEFT with W-$0.50$')
 
 		elif 'HEFT-Ilia-W-0.90' == label:
-			new_labels.append(r'W-$0.90$')
+			new_labels.append(r'HEFT with W-$0.90$')
 
 		elif 'HEFT-LookAhead' == label:
-			new_labels.append(r'LookAhead')
+			new_labels.append(r'Look-ahead')
 
 		else:
 			new_labels.append('Unknown ylabel')
 
 
 	return new_labels
+
+
+
 
 def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
 
@@ -124,7 +127,7 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 		# x-axis config #
 		#################
 		ax.xaxis.labelpad = 15
-		ax.set_xlabel('%s with CCR %s' % (ylabel, ccr), fontsize=14)
+		ax.set_xlabel('%s and CCR %s' % (ylabel, ccr), fontsize=14)
 
 		#################
 		# y-axis config #
@@ -213,6 +216,8 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 
 	# Hide these grid behind plot objects
 	ax.set_axisbelow(True)
+
+
 
 	# Legend
 	plt.legend(errorbars, get_correct_legend(algorithms), loc='best', ncol=1, numpoints=2, fontsize=10)
@@ -338,6 +343,8 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	# Hide these grid behind plot objects
 	ax.set_axisbelow(True)
 
+	ax.set_yscale('log')
+
 	# Legend
 	plt.legend(rects, get_correct_legend(algorithms), loc='best', ncol=1, fontsize=10)
 
@@ -361,32 +368,32 @@ def mean_confidence_interval(data, confidence=0.95):
 	return m, h
 
 
-def create_data_field(ccrs, algorithms):
-	return dict((ccr, dict((algorithm, dict({'mean': 0.0, 'ci': 0.0, 'values':list()})) for algorithm in algorithms)) for ccr in ccrs)
+def create_data_field(field1, field2):
+	return dict((f1, dict((f2, dict({'mean': 0.0, 'ci': 0.0, 'values':list()})) for f2 in field2)) for f1 in field1)
 
 
-def calculate_stats(data, ccrs, algorithms):
+def calculate_stats(data, filed1, field2):
 
-	for ccr in ccrs:
-		for algorithm in algorithms:
+	for f1 in filed1:
+		for f2 in field2:
 
-			values = data[ccr][algorithm]['values']
+			values = data[f1][f2]['values']
 
 			#(mean , CI) = get_stats(values)
 			(mean , CI) = mean_confidence_interval(values)
 
-			data[ccr][algorithm]['mean'] = mean
-			data[ccr][algorithm]['ci'] = CI
+			data[f1][f2]['mean'] = mean
+			data[f1][f2]['ci'] = CI
 
 	return data
 
-def parse_json(json_filename, ccrs, algorithms):
+def parse_json(json_filename, ccrs, algorithms, runtimes, app_name):
 
 	makespans =  create_data_field(ccrs, algorithms)
 	communications =  create_data_field(ccrs, algorithms)
-	runtimes =  create_data_field(ccrs, algorithms)
 	duplicatas = create_data_field(ccrs, algorithms)
 	cost = create_data_field(ccrs, algorithms)
+	reschedules = create_data_field(ccrs, algorithms)
 
 	try:
 		with open(json_filename) as file:
@@ -416,6 +423,8 @@ def parse_json(json_filename, ccrs, algorithms):
 								communication_scheduled = result['totalBytesSent-scheduled']
 								communication_simulated = result['totalBytesSent-simulated']
 
+								cost_simulated = result['cost-simulated']
+
 
 								#if communication_scheduled != communication_simulated:
 								#	print 'diferent communication, simulated %s\t scheduled %s\t' % (communication_scheduled, communication_simulated)
@@ -423,16 +432,20 @@ def parse_json(json_filename, ccrs, algorithms):
 
 								runtime = result['runtime']
 								duplicata = result['duplicatas']
+								rescheduled = result['rescheduled']
 
-								cost_simulated = result['cost-simulated']
+	
 
 
 								makespans[ccr][algorithm]['values'].append(makespan_simulated)
 								communications[ccr][algorithm]['values'].append(communication_simulated)
 								cost[ccr][algorithm]['values'].append(cost_simulated)
 
-								runtimes[ccr][algorithm]['values'].append(runtime)
+								
 								duplicatas[ccr][algorithm]['values'].append(duplicata)
+								reschedules[ccr][algorithm]['values'].append(rescheduled)
+
+								runtimes[app_name][algorithm]['values'].append(runtime)
 								
 
 
@@ -445,11 +458,11 @@ def parse_json(json_filename, ccrs, algorithms):
 	## calculating averages and CIs
 	makespans = calculate_stats(makespans, ccrs, algorithms)
 	communications = calculate_stats(communications, ccrs, algorithms)
-	runtimes = calculate_stats(runtimes, ccrs, algorithms)
 	duplicatas = calculate_stats(duplicatas, ccrs, algorithms)
 	cost = calculate_stats(cost, ccrs, algorithms)
+	reschedules = calculate_stats(reschedules, ccrs, algorithms)
 
-	return (makespans, communications, runtimes, duplicatas, cost)
+	return (makespans, communications, duplicatas, reschedules, cost, runtimes)
 
 
 def calculate_relative(data, ccrs, algorithm, relative='HEFT'):
@@ -551,19 +564,24 @@ if __name__ == '__main__':
 
 	
 
-	for app_name in args.app_names:
-		for app_size in args.app_sizes:
+	
+
+	for app_size in args.app_sizes:
+
+		runtimes =  create_data_field(args.app_names, args.algorithms)
+
+		for app_name in args.app_names:
 			for resource in args.resources:
 
 				# prepare dir to receive the plot files
-				output_dir = '%s/plots/xaxis-ccr/%s' % (args.data_dir, app_name)
+				output_dir = '%s/plots/xaxis-ccr/%s/%s' % (args.data_dir, app_name, app_size)
 				mkdir(output_dir)
 
 				
 				## check err
 				
 				err_file  = '%s/%s/%s/%s/runners/simulation.err' % (args.data_dir, app_name, app_size, resource)
-				if os.path.getsize(err_file) == 0:
+				if os.path.getsize(err_file) != 0:
 					print 'ERR: %s' % (err_file)
 
 				json_filename = '%s/%s/%s/%s/results/simulation.json' % (args.data_dir, app_name, app_size, resource)
@@ -572,43 +590,52 @@ if __name__ == '__main__':
 				plot_filename = '%s-%s-%s' % (app_name, app_size, resource)
 
 
+				
+				(makespans, communications, duplicatas, rescheduled, cost, runtimes) = parse_json(json_filename, args.ccrs, args.algorithms, runtimes, app_name)
 
-				(makespans, communications, runtimes, duplicatas, cost) = parse_json(json_filename, args.ccrs, args.algorithms)
+
+				# call cdf plots (separatelly)
+				#mkdir('%s/cdf' % output_dir)	
+				#plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
+				#plot_cdf(communications, ccrs, algorithms, ylabel='Communication cost', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename))
+				#plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost (\\$)', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
+				
 
 
-				#  ratio
+				# normal plots
+				#call_plots(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+				#call_plots(communications, args.ccrs, args.algorithms, title=title, ylabel='Average communication cost', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
+				#call_plots(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
+
+				#call_plots(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of duplicates', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
+				#call_plots(rescheduled, args.ccrs, args.algorithms, title=title, ylabel='Average of rescheduled tasks', plot_filename='%s/rescheduled-%s' % (output_dir, plot_filename))
+				
+
+		runtimes = calculate_stats(runtimes, args.app_names, args.algorithms)
+		output_dir = '%s/plots/xaxis-ccr/' % (args.data_dir)
+		plot_bars(runtimes, args.app_names, algorithms, ylabel='Average execution time (ms)', title='', plot_filename='%s/general-runtime-app-size-%s' % (output_dir, app_size))
+
+
+				#### OLD BELLOW
+
+				# ratio
 				##cost_makespan_ratio = calculate_ratio(makespans, cost,  args.ccrs, args.algorithms)
 				##call_plots(cost_makespan_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', plot_filename='%s/makespan-cost-ratio-%s' % (output_dir, plot_filename))
 
 				##makespan_communication_ratio = calculate_ratio(communications, makespans, args.ccrs, args.algorithms)
 				##call_plots(makespan_communication_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Makespan}}{\mbox{Communication}}$ Ratio', plot_filename='%s/communication-makespan-ratio-%s' % (output_dir, plot_filename))
 
-				# call cdf plots (separatelly)
-				mkdir('%s/cdf' % output_dir)	
-				plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
-				plot_cdf(communications, ccrs, algorithms, ylabel='Communication cost', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename))
-				plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost (\\$)', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
 				
 
 
-				# normal plots
-				call_plots(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
-				call_plots(communications, args.ccrs, args.algorithms, title=title, ylabel='Average communication cost', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
+				#makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms, relative='HEFT')
+				#call_plots(makespans_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
 
-				call_plots(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of Clones', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
-				call_plots(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
+				#communications_relative = calculate_relative(communications, args.ccrs, args.algorithms,  relative='HEFT')
+				#call_plots(communications_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
+
+				#cost_relative = calculate_relative(cost, args.ccrs, args.algorithms,  relative='HEFT')
+				#call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost (\\$)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
 
 				
-
-				makespans_relative = calculate_relative(makespans, args.ccrs, args.algorithms, relative='HEFT')
-				call_plots(makespans_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised makespan', plot_filename='%s/relative-makespan-%s' % (output_dir, plot_filename))
-
-				communications_relative = calculate_relative(communications, args.ccrs, args.algorithms,  relative='HEFT')
-				call_plots(communications_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised communication cost', plot_filename='%s/relative-communication-%s' % (output_dir, plot_filename))
-
-				cost_relative = calculate_relative(cost, args.ccrs, args.algorithms,  relative='HEFT')
-				call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost (\\$)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
-
-				#duplicatas_relative = calculate_relative(duplicatas, ccrs, ['HEFT-TaskDuplication','HEFT-LookAhead-TaskDuplication'])
-
 				
