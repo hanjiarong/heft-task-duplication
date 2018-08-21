@@ -50,28 +50,28 @@ def get_correct_legend(labels):
 			new_labels.append(r'TaskDuplication')			
 
 		elif 'HEFT-TaskDuplication2' == label:
-			new_labels.append(r'Task Duplication')	
+			new_labels.append(r'HEFT-TD')	
 
 		elif 'Flexible-Scheduler' == label:
 			new_labels.append(r'Cost-aware')	
 
 		elif 'HEFT-LookAhead-TaskDuplication' == label:
-			new_labels.append(r'Look-ahead and Task duplication')
+			new_labels.append(r'Lookahead-TD')
 
 		elif 'HEFT-Ilia-W-0.05' == label:
-			new_labels.append(r'HEFT with W-$0.05$')
+			new_labels.append(r'HEFT with W=$0.05$')
 
 		elif 'HEFT-Ilia-W-0.10' == label:
-			new_labels.append(r'HEFT with W-$0.10$')
+			new_labels.append(r'HEFT with W=$0.10$')
 
 		elif 'HEFT-Ilia-W-0.50' == label:
-			new_labels.append(r'HEFT with W-$0.50$')
+			new_labels.append(r'HEFT with W=$0.50$')
 
 		elif 'HEFT-Ilia-W-0.90' == label:
-			new_labels.append(r'HEFT with W-$0.90$')
+			new_labels.append(r'HEFT with W=$0.90$')
 
 		elif 'HEFT-LookAhead' == label:
-			new_labels.append(r'Look-ahead')
+			new_labels.append(r'Lookahead')
 
 		else:
 			new_labels.append('Unknown ylabel')
@@ -82,7 +82,7 @@ def get_correct_legend(labels):
 
 
 
-def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
+def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf', type='type'):
 
 	import numpy as np
 	#fig, ax = plt.subplots()
@@ -126,38 +126,44 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 		#################
 		# x-axis config #
 		#################
-		ax.xaxis.labelpad = 15
-		ax.set_xlabel('%s and CCR %s' % (ylabel, ccr), fontsize=14)
+		ax.xaxis.labelpad = 7
+		ax.set_xlabel('%s - CCR %s' % (ylabel, ccr), fontsize=16)
 
 		#################
 		# y-axis config #
 		#################
-		ax.set_ylabel(r'CDF', fontsize=14)
-		ax.yaxis.labelpad = 9
+		ax.set_ylabel(r'CDF', fontsize=16)
+		ax.yaxis.labelpad = 0
 		ax.yaxis.set_minor_locator(minorLocator)
 		#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+		if 'communication' in type:
+			ax.xaxis.set_major_formatter(FuncFormatter(y_fmt))
 		
+
+		ax.tick_params(axis='x', labelsize=13)
+		ax.tick_params(axis='y', labelsize=14)
 
 		#################
 		# general config#
 		#################
-		ax.set_title(r'%s' % (title), fontsize=17)
+		ax.set_title(r'%s' % (title), fontsize=16)
 		plt.margins(0.02) # keeps data off plot
 		ax.set_axisbelow(True) # Hide these grid behind plot objects
-		plt.legend(loc='best', ncol=1, numpoints=2, fontsize=10)		
+		plt.legend(loc='best', ncol=1, numpoints=2, fontsize=14)		
 		plt.tight_layout(True) # tight layout
 		ax.grid('on', axis='both', ls='dashed') #grid
 			
 		#################
 		#     saving    #
 		#################
-		plt.savefig( '%s-%s-CDF.%s' % (plot_filename, ccr, format), format=format, bbox_inches='tight') #dpi=300,  rasterized=True)		
+		#plt.subplots_adjust(left=0.0, right=0.9, top=0.9, bottom=0.0)
+		plt.savefig( '%s-%s-CDF.%s' % (plot_filename, ccr, format), format=format, bbox_inches='tight', pad_inches=0.05) #dpi=300,  rasterized=True)		
 		plt.clf()
 		plt.close('all')
 		
 
 
-def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
+def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf', type='type'):
 
 	#fig, ax = plt.subplots()
 	#fig, ax = plt.subplots(figsize=(10, 5))
@@ -194,25 +200,30 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	#################
 	# x-axis config #
 	#################
-	ax.xaxis.labelpad = 15
+	ax.xaxis.labelpad = 0
 	ax.set_xticks([float(ccr) for ccr in ccrs])
 	ax.set_xticklabels([float(ccr) for ccr in ccrs])
-	ax.set_xlabel(r'CCR', fontsize=14)
+	ax.set_xlabel(r'CCR', fontsize=16)
 
 	#################
 	# y-axis config #
 	#################
-	ax.set_ylabel(r'%s' % (ylabel), fontsize=14)
-	ax.yaxis.labelpad = 9
+	ax.set_ylabel(r'%s' % (ylabel), fontsize=16)
+	ax.yaxis.labelpad = 5
 	ax.yaxis.set_minor_locator(minorLocator)
-	#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+	if 'communication' in type:
+		ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+
 	
+	ax.tick_params(axis='x', labelsize=13)
+	plt.xticks(rotation=40)
+	ax.tick_params(axis='y', labelsize=14)
 
 	#################
 	# general config#
 	#################
 	
-	ax.set_title(r'%s' % (title), fontsize=17)
+	ax.set_title(r'%s' % (title), fontsize=16)
 
 	# Hide these grid behind plot objects
 	ax.set_axisbelow(True)
@@ -220,7 +231,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 
 
 	# Legend
-	plt.legend(errorbars, get_correct_legend(algorithms), loc='best', ncol=1, numpoints=2, fontsize=10)
+	plt.legend(errorbars, get_correct_legend(algorithms), loc='best', ncol=1, numpoints=2, fontsize=14)
 
 
 	
@@ -233,15 +244,16 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	#################
 	#     saving    #
 	#################
-	plt.savefig( '%s-errobar.%s' % (plot_filename, format), format=format, bbox_inches='tight') #dpi=300,  rasterized=True)		
+	#plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.0)
+	plt.savefig( '%s-errobar.%s' % (plot_filename, format), format=format, bbox_inches='tight', pad_inches=0.0) #dpi=300,  rasterized=True)		
 	plt.clf()
 	plt.close('all')
 
-def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
+def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
 
 	# plot
-	fig, ax = plt.subplots(figsize=(13, 6))
-	#fig, ax = plt.subplots()
+	#fig, ax = plt.subplots(figsize=(13, 6))
+	fig, ax = plt.subplots()
 
 	# variables
 	number_of_bars = len(algorithms)
@@ -259,11 +271,11 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	#################
 
 	#preparing data
-	for ccr in ccrs:
+	for app_name in app_names:
 		for algorithm in algorithms:
 
-			mean = data[ccr][algorithm]['mean']
-			ci = data[ccr][algorithm]['ci']
+			mean = data[app_name][algorithm]['mean']
+			ci = data[app_name][algorithm]['ci']
 			
 			bar_means.append(mean)
 			bar_cis.append(ci)
@@ -275,9 +287,8 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 
 	# bar configs
 	rects = list()
-	colors = ['red', 'lightsalmon',  'lightgreen', 'royalblue', 'yellowgreen', 'deepskyblue', 'silver', 'silver']
-	colors = ['white', 'white',  'white', 'black', 'white', 'deepskyblue', 'silver', 'silver']
-	opacity = 0.8
+	#colors = ['white', 'white',  'white', 'black', 'white', 'deepskyblue', 'silver', 'silver']
+	colours = ['black', 'red', 'blue', 'green', 'purple', 'orange', 'magenta']
 	error_config = {'ecolor': '0.0'}
 	patterns = (' ', '..',  'x',  '--', 'xxx', '\\', '+', '.')
 
@@ -285,8 +296,8 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	for i in range(number_of_bars):
 		rect = ax.bar(bar_positions[i::number_of_bars], bar_means[i::number_of_bars], bar_width,
 			hatch=patterns[i],
-			alpha=1.0,
-			color=colors[i],
+			alpha=0.7,
+			color=colours[i],
 			yerr=bar_cis[i::number_of_bars],
 			error_kw=error_config,
 			capsize=5,
@@ -300,7 +311,7 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	#################
 	
 	# ensembles tick labels
-	xticklabels = [r'$%s$' % (i)  for i in ccrs]
+	xticklabels = [r'$%s$' % (i)  for i in app_names]
 	xticks = map(lambda x: x  + ((number_of_bars * bar_width)/2), bar_positions[::number_of_bars])
 
 	
@@ -316,11 +327,11 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	for t, y in zip( ax.get_xticklabels(), v_y ):
 		t.set_y(y)
 
-	ax.xaxis.labelpad = 15
-	ax.set_xlabel(r'CCR', fontsize=15)
+	ax.xaxis.labelpad = 10
+	ax.set_xlabel(xlabel, fontsize=15)
 	ax.grid('off', axis='x', which='minor')
-	ax.tick_params( axis='x', which='minor', direction='out', length=0, top='off')
-	ax.tick_params( axis='x', which='major', bottom='on', top='off', length=2 )
+	ax.tick_params( axis='x', which='minor', direction='out', length=1, top='off')
+	ax.tick_params( axis='x', which='major', bottom='on', top='off', length=0 )
 	ax.set_xlim(right=bar_positions[-1] + bar_width )
 
 	#################
@@ -333,6 +344,7 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	ax.yaxis.set_minor_locator(minorLocator)
 	#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
 	ax.tick_params( axis='both', labelsize=14)
+	ax.set_ybound(upper=2)
 
 	#################
 	# general config#
@@ -343,10 +355,11 @@ def plot_bars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_file
 	# Hide these grid behind plot objects
 	ax.set_axisbelow(True)
 
+	# log scale
 	ax.set_yscale('log')
 
 	# Legend
-	plt.legend(rects, get_correct_legend(algorithms), loc='best', ncol=1, fontsize=10)
+	plt.legend(rects, get_correct_legend(algorithms), loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=5, fontsize=12)
 
 	
 	# tight layout
@@ -526,22 +539,15 @@ def calculate_ratio(data1, data2, ccrs, algorithms):
 	return new_data
 
 
-def call_plots(data, ccrs, algorithms, title='title', ylabel='y_label', plot_filename='plot'):
-
-
-	plot_errorbars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
-	#plot_bars(data, ccrs, algorithms, ylabel=ylabel, title=title, plot_filename=plot_filename)
-	
-
 
 if __name__ == '__main__':
 
 
-	algorithms = ['HEFT','HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication','HEFT-Ilia-W-0.50', ]# 'Flexible-Scheduler' 'HEFT-TaskDuplication',  'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
+	algorithms = ['HEFT','HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.50', ]# 'Flexible-Scheduler' 'HEFT-TaskDuplication',  'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
 	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
 	app_sizes = ['50', '100', '500', '1000']
-	resources = ['2', '5', '10', '15', '20', '25', '30', '35']
-	ccrs = ['0.1', '0.5', '1.0', '2.0', '5.0', '10.0']
+	resources = ['5', '10', '15', '20', '25', '30', '35'] #'2', 
+	ccrs = ['0.5', '1.0', '2.0', '5.0', '10.0'] #'0.1', 
 
 	data_dir = '/local1/thiagogenez/mulitple-workflow-simulation'
 
@@ -565,11 +571,9 @@ if __name__ == '__main__':
 	
 
 	
+	runtimes =  create_data_field(args.app_names, args.algorithms)
 
 	for app_size in args.app_sizes:
-
-		runtimes =  create_data_field(args.app_names, args.algorithms)
-
 		for app_name in args.app_names:
 			for resource in args.resources:
 
@@ -595,25 +599,28 @@ if __name__ == '__main__':
 
 
 				# call cdf plots (separatelly)
-				#mkdir('%s/cdf' % output_dir)	
-				#plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
-				#plot_cdf(communications, ccrs, algorithms, ylabel='Communication cost', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename))
-				#plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost (\\$)', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
+				mkdir('%s/cdf' % output_dir)	
+				plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
+				plot_cdf(communications, ccrs, algorithms, ylabel='Amount of data transfer', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename), type='communication')
+				plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
+				
+				#plot_cdf(duplicatas, ccrs, algorithms, ylabel='Number of duplicate tasks', title=title, plot_filename='%s/cdf/duplicatas-%s' % (output_dir, plot_filename))
+				#plot_cdf(rescheduled, ccrs, algorithms, ylabel='Number of tasks rescheduled', title=title, plot_filename='%s/cdf/rescheduled-%s' % (output_dir, plot_filename))
 				
 
-
+				
 				# normal plots
-				#call_plots(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
-				#call_plots(communications, args.ccrs, args.algorithms, title=title, ylabel='Average communication cost', plot_filename='%s/communication-%s' % (output_dir, plot_filename))
-				#call_plots(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
+				plot_errorbars(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+				plot_errorbars(communications, args.ccrs, args.algorithms, title=title, ylabel='Average amount of data transfer', plot_filename='%s/communication-%s' % (output_dir, plot_filename), type='communication')
+				plot_errorbars(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
 
-				#call_plots(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of duplicates', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
-				#call_plots(rescheduled, args.ccrs, args.algorithms, title=title, ylabel='Average of rescheduled tasks', plot_filename='%s/rescheduled-%s' % (output_dir, plot_filename))
+				plot_errorbars(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of duplicates', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
+				plot_errorbars(rescheduled, args.ccrs, args.algorithms, title=title, ylabel='Average of rescheduled tasks', plot_filename='%s/rescheduled-%s' % (output_dir, plot_filename))
 				
 
-		runtimes = calculate_stats(runtimes, args.app_names, args.algorithms)
-		output_dir = '%s/plots/xaxis-ccr/' % (args.data_dir)
-		plot_bars(runtimes, args.app_names, algorithms, ylabel='Average execution time (ms)', title='', plot_filename='%s/general-runtime-app-size-%s' % (output_dir, app_size))
+	#runtimes = calculate_stats(runtimes, args.app_names, args.algorithms)
+	#output_dir = '%s/plots/xaxis-ccr/' % (args.data_dir)
+	#plot_bars(runtimes, args.app_names, algorithms, xlabel='Workflow Applications', ylabel='Average execution time (ms)', title='', plot_filename='%s/general-runtime' % (output_dir))
 
 
 				#### OLD BELLOW
