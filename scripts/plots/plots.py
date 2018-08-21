@@ -126,22 +126,22 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 		#################
 		# x-axis config #
 		#################
-		ax.xaxis.labelpad = 7
+		#ax.xaxis.labelpad = 7
 		ax.set_xlabel('%s - CCR %s' % (ylabel, ccr), fontsize=16)
 
 		#################
 		# y-axis config #
 		#################
 		ax.set_ylabel(r'CDF', fontsize=16)
-		ax.yaxis.labelpad = 0
+		#ax.yaxis.labelpad = 0
 		ax.yaxis.set_minor_locator(minorLocator)
 		#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
 		if 'communication' in type:
 			ax.xaxis.set_major_formatter(FuncFormatter(y_fmt))
 		
 
-		ax.tick_params(axis='x', labelsize=13)
-		ax.tick_params(axis='y', labelsize=14)
+		ax.tick_params(axis='x', labelsize=13, pad=7)
+		ax.tick_params(axis='y', labelsize=14, pad=0)
 
 		#################
 		# general config#
