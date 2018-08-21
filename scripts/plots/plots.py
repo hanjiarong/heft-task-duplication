@@ -200,7 +200,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	#################
 	# x-axis config #
 	#################
-	ax.xaxis.labelpad = 0
+	#ax.xaxis.labelpad = 0
 	ax.set_xticks([float(ccr) for ccr in ccrs])
 	ax.set_xticklabels([float(ccr) for ccr in ccrs])
 	ax.set_xlabel(r'CCR', fontsize=16)
@@ -209,15 +209,15 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	# y-axis config #
 	#################
 	ax.set_ylabel(r'%s' % (ylabel), fontsize=16)
-	ax.yaxis.labelpad = 5
+	#ax.yaxis.labelpad = 5
 	ax.yaxis.set_minor_locator(minorLocator)
 	if 'communication' in type:
 		ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
 
 	
-	ax.tick_params(axis='x', labelsize=13)
+	ax.tick_params(axis='x', labelsize=13, pad=0)
 	plt.xticks(rotation=40)
-	ax.tick_params(axis='y', labelsize=14)
+	ax.tick_params(axis='y', labelsize=14, pad=0)
 
 	#################
 	# general config#
@@ -245,7 +245,7 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	#     saving    #
 	#################
 	#plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.0)
-	plt.savefig( '%s-errobar.%s' % (plot_filename, format), format=format, bbox_inches='tight', pad_inches=0.0) #dpi=300,  rasterized=True)		
+	plt.savefig( '%s-errobar.%s' % (plot_filename, format), format=format, bbox_inches='tight', pad_inches=0.01) #dpi=300,  rasterized=True)		
 	plt.clf()
 	plt.close('all')
 
