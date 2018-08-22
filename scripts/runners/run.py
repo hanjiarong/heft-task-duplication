@@ -119,7 +119,7 @@ if __name__ == '__main__':
 	parser.add_argument('--iter_begin', nargs='?', help='Simulation iterations', type=int, action='store', default=0)
 	parser.add_argument('--version', action='version', version='%(prog)s 1.0')
 	parser.add_argument('--nodes', nargs='+', help='Nodes range', type=int, action='store', default=nodes)
-	parser.add_argument('--ccrs', nargs='+', help='communication to computation ratios (CCR)', type=float, action='store', default=ccrs)
+	parser.add_argument('--ccrs', nargs='+', help='communication to computation ratios (CCR)', type=str, action='store', default=ccrs)
 	parser.add_argument('--bandwidth_values', nargs='+', help='Bandwidth values', type=int, action='store', default=bandwidth_values)
 	parser.add_argument('--processing_capacity', nargs='+', help='Processing Capacities', type=int, action='store', default=processing_capacity)
 
