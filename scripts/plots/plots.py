@@ -11,6 +11,9 @@ matplotlib.rcParams['text.usetex'] = True
 matplotlib.rcParams['text.latex.unicode'] = True
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+from matplotlib.ticker import MaxNLocator
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 
 
 from matplotlib.ticker import AutoMinorLocator
@@ -79,6 +82,96 @@ def get_correct_legend(labels):
 
 	return new_labels
 
+
+
+def plot_bars_in(ax, data, ccrs, algorithms, title='Title', xlabel='x_label', ylabel='y_label',  type=type):
+
+	# variables
+	number_of_bars = len(algorithms)
+	minorLocator = AutoMinorLocator()
+	
+	# data
+	bar_means = list()
+	bar_cis = list()
+	bar_positions = list()
+	bar_width = 0.80	
+	position = 0
+
+	#################
+	# creating bars #
+	#################
+
+	#preparing data
+	for ccr in ccrs:
+		for algorithm in algorithms:
+
+			mean = data[ccr][algorithm]['mean']
+			ci = data[ccr][algorithm]['ci']
+			
+			bar_means.append(mean)
+			bar_cis.append(ci)
+
+			position += bar_width
+			bar_positions.append(position)
+
+		position += bar_width
+
+	# bar configs
+	rects = list()
+	#colors = ['white', 'white',  'white', 'black', 'white', 'deepskyblue', 'silver', 'silver']
+	colours = ['black', 'red', 'blue', 'green', 'purple', 'orange', 'magenta']
+	error_config = {'ecolor': '0.0'}
+	patterns = (' ', '..',  'x',  '--', 'xxx', '\\', '+', '.')
+
+	# creating rects
+	for i in range(number_of_bars):
+		rect = ax.bar(bar_positions[i::number_of_bars], bar_means[i::number_of_bars], bar_width,
+			hatch=patterns[i],
+			alpha=0.7,
+			color=colours[i],
+			yerr=bar_cis[i::number_of_bars],
+			error_kw=error_config,
+			capsize=5,
+			edgecolor='black',
+			#bottom=min(bar_means) - 0.20 *min(bar_means),
+			label='%s' % (algorithms[i]))
+		rects.append(rect)
+
+	#################
+	# x-axis config #
+	#################
+	
+	ax.xaxis.labelpad = 0
+	ax.set_xlabel('CCR %s' % ccrs[0], fontsize=15)
+	ax.grid('on', axis='y', which='minor')
+	ax.tick_params( axis='x', which='minor', direction='out', length=1, top='off')
+	ax.tick_params( axis='x', which='major', bottom='on', top='off', length=0 )
+	ax.set_xticklabels([])
+
+	#################
+	# y-axis config #
+	#################
+	ax.yaxis.grid(color='black',linestyle='dotted', linewidth=1)
+		
+	if 'communication' in type:
+		ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+
+	ax.tick_params(axis='y', labelsize=14, pad=0)
+
+	for label in ax.get_ymajorticklabels():
+		label.set_rotation(30)
+		label.set_horizontalalignment("right")
+
+	#################
+	# general config#
+	#################
+	
+	# Hide these grid behind plot objects
+	ax.set_axisbelow(True)
+
+		
+	# tight layout
+	plt.tight_layout(True)
 
 
 
@@ -163,11 +256,87 @@ def plot_cdf(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filen
 		
 
 
+def plot_cdf_in(ax, data, ccrs, algorithms, title='Title', ylabel='y_label', type='type'):
+
+	import numpy as np
+	#fig, ax = plt.subplots()
+	
+
+	linestyle = ['solid', 'dashed', 'dashdot', 'dotted', 'solid', 'solid']
+	markers = ['v', 'o', 'x', 'D', '*', 'v']
+	colours = ['black', 'red', 'blue', 'green', 'purple', 'orange', 'magenta']
+
+	
+	for ccr in ccrs:	
+		
+		i = 0
+		#fig, ax = plt.subplots(figsize=(10, 5))
+		minorLocator = AutoMinorLocator()
+
+		for i in range(len(algorithms)):	
+
+	
+			algorithm = algorithms[i]
+
+			X = data[ccr][algorithm]['values'] 
+			Xs = np.sort(X)  # Or data.sort(), if data can be modified
+
+			#method 1
+			#n_bins=len(Xs)
+			#counts, bin_edges, patches = ax[0].hist(X, bins=n_bins,  histtype='step', cumulative=True, normed=True)
+
+			#method 2
+			y = np.arange(1, len(X) + 1) / np.float(len(X))
+			ax.plot(Xs, y, color=colours[i], label=get_correct_legend([algorithm])[0], ls=linestyle[i], lw=1)
+
+
+			#method 3
+			#cnt, edges = np.histogram(X, bins=n_bins, normed=1, density=False)
+			#ax[2].step(edges[:-1], cnt.cumsum())
+
+			i = i + 1
+
+		#################
+		# x-axis config #
+		#################
+		#ax.xaxis.labelpad = 7
+		#ax.set_xlabel('CCR %s' % (ccr), fontsize=12)
+
+		#################
+		# y-axis config #
+		#################
+		#ax.set_ylabel(r'CDF', fontsize=12)
+		#ax.yaxis.labelpad = 0
+		ax.yaxis.set_minor_locator(minorLocator)
+		#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
+		if 'communication' in type:
+			ax.xaxis.set_major_formatter(FuncFormatter(y_fmt))
+		
+
+		ax.tick_params(axis='x', labelsize=11, pad=0)
+		ax.tick_params(axis='y', labelsize=11, pad=0)
+
+		#################
+		# general config#
+		#################
+		#ax.set_title(r'%s' % (title), fontsize=16)
+		plt.margins(0.02) # keeps data off plot
+		ax.set_axisbelow(True) # Hide these grid behind plot objects
+		
+		#plt.legend(loc='best', ncol=1, numpoints=2, fontsize=14)		
+		plt.tight_layout(True) # tight layout
+		ax.grid('on', axis='both', ls='dashed') #grid
+			
+
+
+
 def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot_filename='/tmp/plot', format='pdf', type='type'):
 
 	#fig, ax = plt.subplots()
 	#fig, ax = plt.subplots(figsize=(10, 5))
 	fig, ax = plt.subplots()
+	
+	
 	minorLocator = AutoMinorLocator()
 
 	x = [float(ccr) for ccr in ccrs]
@@ -179,7 +348,6 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	colours = ['black', 'red', 'blue', 'green', 'purple', 'orange', 'magenta']
 
 	#preparing data
-	
 	for i in range(len(algorithms)):	
 		y = list()
 		yerr = list()
@@ -191,11 +359,26 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 			mean = data[ccr][algorithm]['mean']
 			ci = data[ccr][algorithm]['ci']
 
+			print '%s\t%s\t%s' % (algorithm, ccr, mean)
+
 			y.append(mean)
 			yerr.append(ci)
 
 		errorbar = ax.errorbar(x, y, yerr=yerr, ls=linestyle[i], marker=markers[i], color=colours[i], markerfacecolor="None", capsize=5, markersize=6, linewidth=1)
 		errorbars.append(errorbar[0])
+
+		#sub_plot.errorbar(x, y, yerr=yerr, ls=linestyle[i], marker=markers[i], color=colours[i], markerfacecolor="None", capsize=5, markersize=6, linewidth=1)
+
+
+	#print overal average
+	avg = 0.0
+	for algorithm in algorithms:
+		avg = 0.0
+
+		for ccr in ccrs:
+			avg = avg + data[ccr][algorithm]['mean']
+
+		print 'overall avg for %s considering all CCRs is: %f' % (algorithm, (avg / float(len(ccrs))))
 
 	#################
 	# x-axis config #
@@ -203,43 +386,117 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 	#ax.xaxis.labelpad = 0
 	ax.set_xticks([float(ccr) for ccr in ccrs])
 	ax.set_xticklabels([float(ccr) for ccr in ccrs])
-	ax.set_xlabel(r'CCR', fontsize=16)
+	ax.set_xlabel('CCR', fontsize=18)
+
+	for label in ax.get_xmajorticklabels()[:2]:
+		label.set_rotation(50)
+		#label.set_horizontalalignment("right")
 
 	#################
 	# y-axis config #
 	#################
-	ax.set_ylabel(r'%s' % (ylabel), fontsize=16)
+	#ax.set_ylabel(r'%s' % (ylabel), fontsize=18)
 	#ax.yaxis.labelpad = 5
 	ax.yaxis.set_minor_locator(minorLocator)
 	if 'communication' in type:
 		ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
 
 	
-	ax.tick_params(axis='x', labelsize=13, pad=0)
-	plt.xticks(rotation=40)
-	ax.tick_params(axis='y', labelsize=14, pad=0)
+	ax.tick_params(axis='x', labelsize=18, pad=-1)
+	ax.tick_params(axis='y', labelsize=19, pad=0)
+
+
 
 	#################
 	# general config#
 	#################
 	
-	ax.set_title(r'%s' % (title), fontsize=16)
-
-	# Hide these grid behind plot objects
-	ax.set_axisbelow(True)
-
-
+	ax.set_title(r'%s' % (title), fontsize=20)
 
 	# Legend
-	plt.legend(errorbars, get_correct_legend(algorithms), loc='best', ncol=1, numpoints=2, fontsize=14)
+	
+	####MONTAGE
+	if 'cost-MONTAGE-100-15' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='center right', bbox_to_anchor=(1.0, 0.30),  ncol=2, numpoints=1, fontsize=15, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )
+	
+	elif 'cost-MONTAGE-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='center right', bbox_to_anchor=(1.0, 0.30),  ncol=2, numpoints=1, fontsize=15, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )
+	
+	
+	####GENOME
+	elif 'cost-GENOME-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='lower right',  ncol=2, numpoints=1, fontsize=13, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )
 
 
+	####SIPHT
+	elif 'cost-SIPHT-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='center right', bbox_to_anchor=(1.01, 0.35), ncol=2, numpoints=1, fontsize=14, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )	
+
+
+	####LIGO
+	elif 'communication-LIGO-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='center right', bbox_to_anchor=(1.01, 0.35), ncol=2, numpoints=1, fontsize=13, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )	
+
+	elif 'communication-LIGO-100-15' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='center right', bbox_to_anchor=(1.0, 0.35),  ncol=2, numpoints=1, fontsize=15, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )	
+
+	elif 'cost-LIGO-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='lower right',  ncol=2, numpoints=1, fontsize=13, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )	
+
+
+
+	####CYBERSHAKE
+	elif 'cost-CYBERSHAKE-100-15' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='lower right', ncol=2, numpoints=1, fontsize=13, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )
+	
+	elif 'cost-CYBERSHAKE-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='center right', bbox_to_anchor=(1.0, 0.35), ncol=2, numpoints=1, fontsize=12, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )
+	
+
+	elif 'communication-CYBERSHAKE-100-15' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='upper left',  ncol=2, numpoints=1, fontsize=15, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )	
+
+	elif 'communication-CYBERSHAKE-100-30' in plot_filename:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='upper left',  ncol=2, numpoints=1, fontsize=15, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )	
+
+
+	else:
+		plt.legend(errorbars, get_correct_legend(algorithms),  loc='lower right', ncol=2, numpoints=1, fontsize=15, borderpad=0.2, labelspacing=0.1, columnspacing=0.1 )
+	
+
+	in_position = [.20, .58, .25, .30]
+	in_ccr = ['10.0']
+	
+	if 'communication-GENOME-100-15' in plot_filename:
+		in_position =[.2, .61, .25, .30]
+
+	elif 'communication-GENOME-100-30' in plot_filename:
+		in_position =[.2, .61, .25, .30]
+
+	elif 'communication-CYBERSHAKE-100-15' in plot_filename:
+		in_position =[.66, .223, .25, .30]
+
+	elif 'communication-CYBERSHAKE-100-30' in plot_filename:
+		in_position =[.66, .223, .25, .30]
+
+	if 'SIPHT' in plot_filename:
+		in_ccr = ['10.0']
+
+	sub_plot = plt.axes(in_position)
+	plot_bars_in(sub_plot,  data, in_ccr, algorithms, title='', ylabel='', type=type)
+
+	
 	
 	# tight layout
 	plt.tight_layout(True)
 	
 	#grid
-	ax.grid('on', axis='both', ls='dashed')
+	ax.grid('on', axis='both', ls='dotted')
+
+	# Hide these grid behind plot objects
+	ax.set_axisbelow(True)
+
+	
 
 	#################
 	#     saving    #
@@ -252,8 +509,8 @@ def plot_errorbars(data, ccrs, algorithms, title='Title', ylabel='y_label', plot
 def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylabel='y_label', plot_filename='/tmp/plot', format='pdf'):
 
 	# plot
-	#fig, ax = plt.subplots(figsize=(13, 6))
-	fig, ax = plt.subplots()
+	fig, ax = plt.subplots(figsize=(12, 6))
+	#fig, ax = plt.subplots()
 
 	# variables
 	number_of_bars = len(algorithms)
@@ -263,7 +520,7 @@ def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylab
 	bar_means = list()
 	bar_cis = list()
 	bar_positions = list()
-	bar_width = 0.80	
+	bar_width = 0.90	
 	position = 0
 
 	#################
@@ -311,8 +568,9 @@ def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylab
 	#################
 	
 	# ensembles tick labels
-	xticklabels = [r'$%s$' % (i)  for i in app_names]
+	xticklabels = ['%s' % (i)  for i in app_names]
 	xticks = map(lambda x: x  + ((number_of_bars * bar_width)/2), bar_positions[::number_of_bars])
+	ax.set_xticklabels(xticklabels, fontsize=10)
 
 	
 	# divisor line between ensenbles sizes
@@ -322,29 +580,40 @@ def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylab
 	# set ticks and labels
 	ax.set_xticks( xticks)
 	ax.set_xticks( divisor_xticks, minor=True )
-	ax.set_xticklabels(xticklabels, fontsize=14)
-	v_y = [-0.03] * len(xticklabels)
+	
+	v_y = [-0.02] * len(xticklabels)
 	for t, y in zip( ax.get_xticklabels(), v_y ):
 		t.set_y(y)
 
-	ax.xaxis.labelpad = 10
-	ax.set_xlabel(xlabel, fontsize=15)
+
+	ax.xaxis.labelpad = 0
+	#ax.set_xlabel(xlabel, fontsize=15)
 	ax.grid('off', axis='x', which='minor')
-	ax.tick_params( axis='x', which='minor', direction='out', length=1, top='off')
-	ax.tick_params( axis='x', which='major', bottom='on', top='off', length=0 )
+	#ax.tick_params( axis='x', which='minor', direction='out', length=1, top='off')
+	#ax.tick_params( axis='x', which='major', bottom='on', top='off', length=0 )
 	ax.set_xlim(right=bar_positions[-1] + bar_width )
+	
+	
+	#for label in [ax.get_xmajorticklabels()[1]]:
+	#	label.set_x(-1.0)
+		#label.set_horizontalalignment("right")
+
+
 
 	#################
 	# y-axis config #
 	#################
 
-	ax.set_ylabel(ylabel, fontsize=14)
-	ax.yaxis.labelpad = 9
+	#ax.set_ylabel(ylabel, fontsize=18)
+	ax.yaxis.labelpad = 0
 	ax.yaxis.grid(color='black',linestyle='dotted', linewidth=1)
 	ax.yaxis.set_minor_locator(minorLocator)
 	#ax.yaxis.set_major_formatter(FuncFormatter(y_fmt))
-	ax.tick_params( axis='both', labelsize=14)
-	ax.set_ybound(upper=2)
+	ax.tick_params(axis='x', labelsize=28, pad=0.5)
+	ax.tick_params(axis='y', labelsize=28, pad=1)
+	#ax.set_ybound(upper=2)
+
+	
 
 	#################
 	# general config#
@@ -359,7 +628,8 @@ def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylab
 	ax.set_yscale('log')
 
 	# Legend
-	plt.legend(rects, get_correct_legend(algorithms), loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=5, fontsize=12)
+	plt.legend(rects, get_correct_legend(algorithms), loc='center left', bbox_to_anchor=(1.0, .5), ncol=1, fontsize=30, borderpad=0.4, labelspacing=0.7, columnspacing=.8 )
+
 
 	
 	# tight layout
@@ -369,7 +639,9 @@ def plot_bars(data, app_names, algorithms, title='Title', xlabel='x_label', ylab
 	#################
 	#     saving    #
 	#################
-	plt.savefig( '%s-bar.%s' % (plot_filename, format), format=format, bbox_inches='tight') #dpi=300,  rasterized=True)		
+
+
+	plt.savefig( '%s-bar.%s' % (plot_filename, format), format=format, bbox_inches='tight', pad_inches=0.01) #dpi=300,  rasterized=True)		
 	plt.clf()
 	plt.close('all')
 
@@ -539,12 +811,20 @@ def calculate_ratio(data1, data2, ccrs, algorithms):
 	return new_data
 
 
+def print_table_line(data, ccrs, app_name, app_size, type):
+
+	algorithms = ['HEFT-TaskDuplication2', 'HEFT-LookAhead-TaskDuplication']
+
+	for algorithm in algorithms:
+
+		for ccr in ccrs:
+			print "%s\t%s\t%s\t%s\t%s\t%.1f\\pm%.1f" % (type, algorithm, app_name, app_size, ccr, data[ccr][algorithm]['mean'], data[ccr][algorithm]['ci'])
 
 if __name__ == '__main__':
 
 
 	algorithms = ['HEFT','HEFT-TaskDuplication2','HEFT-LookAhead', 'HEFT-LookAhead-TaskDuplication'] #,'HEFT-Ilia-W-0.50', ]# 'Flexible-Scheduler' 'HEFT-TaskDuplication',  'HEFT-Ilia-W-0.10', 'HEFT-LookAhead']#, 'HEFT-Ilia-W-0.50', 'HEFT-Ilia-W-0.90']
-	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT', 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
+	app_names =  ['MONTAGE', 'CYBERSHAKE', 'GENOME', 'LIGO', 'SIPHT'] #, 'FORKJOIN.A.1'] #, 'FORKJOIN.A.2' ]
 	app_sizes = ['50', '100', '500', '1000']
 	resources = ['5', '10', '15', '20', '25', '30', '35'] #'2', 
 	ccrs = ['0.5', '1.0', '2.0', '5.0', '10.0'] #'0.1', 
@@ -590,7 +870,13 @@ if __name__ == '__main__':
 
 				json_filename = '%s/%s/%s/%s/results/simulation.json' % (args.data_dir, app_name, app_size, resource)
 				
-				title = '%s with %s tasks - %s resources' % (app_name, app_size, resource)
+
+				title = ''
+				if 'GENOME' in app_name:
+					title = 'EPIGENOME with %s tasks - %s resources' % (app_size, resource)					
+
+				else:
+					title = '%s with %s tasks - %s resources' % (app_name, app_size, resource)
 				plot_filename = '%s-%s-%s' % (app_name, app_size, resource)
 
 
@@ -599,32 +885,40 @@ if __name__ == '__main__':
 
 
 				# call cdf plots (separatelly)
-				mkdir('%s/cdf' % output_dir)	
-				plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
-				plot_cdf(communications, ccrs, algorithms, ylabel='Amount of data transfer', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename), type='communication')
-				plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
-				
+				#mkdir('%s/cdf' % output_dir)	
+				#plot_cdf(makespans, ccrs, algorithms, ylabel='Makespan', title=title, plot_filename='%s/cdf/makespan-%s' % (output_dir, plot_filename))
+				#plot_cdf(communications, ccrs, algorithms, ylabel='Amount of data transfer', title=title, plot_filename='%s/cdf/communication-%s' % (output_dir, plot_filename), type='communication')
+				#plot_cdf(cost, ccrs, algorithms, ylabel='Execution Cost', title=title, plot_filename='%s/cdf/cost-%s' % (output_dir, plot_filename))
 				#plot_cdf(duplicatas, ccrs, algorithms, ylabel='Number of duplicate tasks', title=title, plot_filename='%s/cdf/duplicatas-%s' % (output_dir, plot_filename))
 				#plot_cdf(rescheduled, ccrs, algorithms, ylabel='Number of tasks rescheduled', title=title, plot_filename='%s/cdf/rescheduled-%s' % (output_dir, plot_filename))
 				
 
+
 				
 				# normal plots
-				plot_errorbars(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
-				plot_errorbars(communications, args.ccrs, args.algorithms, title=title, ylabel='Average amount of data transfer', plot_filename='%s/communication-%s' % (output_dir, plot_filename), type='communication')
-				plot_errorbars(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
+				#plot_errorbars(makespans, args.ccrs, args.algorithms, title=title, ylabel='Average makespan', plot_filename='%s/makespan-%s' % (output_dir, plot_filename))
+				#plot_errorbars(communications, args.ccrs, args.algorithms, title=title, ylabel='Average amount of data transfer', plot_filename='%s/communication-%s' % (output_dir, plot_filename), type='communication')
+				#plot_errorbars(cost, args.ccrs, args.algorithms, title=title, ylabel='Average Execution Cost (\\$)', plot_filename='%s/cost-%s' % (output_dir, plot_filename))
 
-				plot_errorbars(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of duplicates', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
-				plot_errorbars(rescheduled, args.ccrs, args.algorithms, title=title, ylabel='Average of rescheduled tasks', plot_filename='%s/rescheduled-%s' % (output_dir, plot_filename))
+
+
+				#print_table_line(duplicatas, ccrs, app_name, app_size, type='duplicatas')
+				#plot_errorbars(duplicatas, args.ccrs, args.algorithms, title=title, ylabel='Average of duplicates', plot_filename='%s/duplicatas-%s' % (output_dir, plot_filename))
 				
 
-	#runtimes = calculate_stats(runtimes, args.app_names, args.algorithms)
-	#output_dir = '%s/plots/xaxis-ccr/' % (args.data_dir)
-	#plot_bars(runtimes, args.app_names, algorithms, xlabel='Workflow Applications', ylabel='Average execution time (ms)', title='', plot_filename='%s/general-runtime' % (output_dir))
+				#print_table_line(rescheduled, ccrs, app_name, app_size,type='rescheduled')
+				#plot_errorbars(rescheduled, args.ccrs, args.algorithms, title=title, ylabel='Average of rescheduled tasks', plot_filename='%s/rescheduled-%s' % (output_dir, plot_filename))
+				
+
+	runtimes = calculate_stats(runtimes, args.app_names, args.algorithms)
+	output_dir = '%s/plots/xaxis-ccr/' % (args.data_dir)
+	plot_bars(runtimes, args.app_names, args.algorithms, xlabel='Workflow Applications', ylabel='Average execution time (ms)', title='', plot_filename='%s/general-runtime' % (output_dir))
 
 
-				#### OLD BELLOW
 
+				########################################
+				#### OLD BELLOW					########
+				########################################
 				# ratio
 				##cost_makespan_ratio = calculate_ratio(makespans, cost,  args.ccrs, args.algorithms)
 				##call_plots(cost_makespan_ratio, args.ccrs, args.algorithms, title=title, ylabel='$\\frac{\\mbox{Execution cost}}{\\mbox{Makespan}}$ Ratio', plot_filename='%s/makespan-cost-ratio-%s' % (output_dir, plot_filename))
@@ -645,4 +939,4 @@ if __name__ == '__main__':
 				#call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost (\\$)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
 
 				
-				
+	

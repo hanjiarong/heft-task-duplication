@@ -145,6 +145,5 @@ if __name__ == '__main__':
 
 
 
-	# python call
-	# python run.py --iterations 100 --iter_begin 0 --app_sizes 50 100 --app_names FORKJOIN.A.1 FORKJOIN.A.2 FORKJOIN.A.50
-	# python run.py --iterations 100 --iter_begin 0 
+	# python simulation call
+	# python run.py --app_sizes 100 --app_names MONTAGE CYBERSHAKE LIGO GENOME SIPHT --iterations 500 --iter_begin 0 --ccrs 0.5 1.0 2.0 5.0 10.0 --resources 15 30
