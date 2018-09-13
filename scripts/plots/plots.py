@@ -939,4 +939,8 @@ if __name__ == '__main__':
 				#call_plots(cost_relative, args.ccrs, args.algorithms, title=title, ylabel='Normalised execution cost (\\$)', plot_filename='%s/relative-cost-%s' % (output_dir, plot_filename))
 
 				
+
+
+##### ex call:
+## python plots.py --data_dir ~/Downloads/simulations-outputs --app_sizes 100 --resources 30 --app_names MONTAGE GENOME CYBERSHAKE LIGO SIPHT
 	
